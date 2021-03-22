@@ -35,18 +35,26 @@ s_m = [l0, 0, 0;
        l0, l1, l2];
 
 fh = figure;
-for it=1:size(k, 1)
-    it
-    k_pcc_t = repmat(k(it, :), size(s, 1), 1);
+fh.Visible = 'off';
+frame_range = 1:50:size(k, 1);
+clear M;
+M(size(frame_range, 2)) = struct('cdata',[],'colormap',[]);
+for it=1:length(frame_range)
+    idx = frame_range(it);
+    idx
+    k_pcc_t = repmat(k(idx, :), size(s, 1), 1);
     x_pcc_t = forward_kinematics(theta_0, k_pcc_t, s);
     plot(x_pcc_t(:, 1), x_pcc_t(:, 2))
     hold on;
-    k_m_t = repmat(k(it, :), size(s_m, 1), 1);
+    k_m_t = repmat(k(idx, :), size(s_m, 1), 1);
     x_m_t = forward_kinematics(theta_0, k_m_t, s_m);
     plot(x_m_t(:, 1), x_m_t(:, 2), 'r*')
     xlim([-(l0+l1+l2), (l0+l1+l2)]);
     ylim([-(l0+l1+l2), (l0+l1+l2)]);
     hold off;
     drawnow;
+    M(it) = getframe;
 end
+fh.Visible = 'on';
+movie(M);
 
