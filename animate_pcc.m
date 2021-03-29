@@ -1,5 +1,13 @@
 % This script uses the outputs of the simulink model saved in the out
 % variable of the workspace
+
+% only consider every n-th datapoint
+num_skip = 25;
+% frames per second
+fps = 10;
+% how many times to repeat the movie
+repeat = 5;
+
 alpha = out.alpha.Data;
 
 l = out.l.Data;
@@ -37,7 +45,7 @@ s_m = [l0, 0, 0;
 
 fh = figure;
 fh.Visible = 'off';
-frame_range = 1:50:size(kappa, 1);
+frame_range = 1:num_skip:size(kappa, 1);
 clear M;
 M(size(frame_range, 2)) = struct('cdata',[],'colormap',[]);
 for it=1:length(frame_range)
@@ -57,5 +65,5 @@ for it=1:length(frame_range)
     M(it) = getframe;
 end
 fh.Visible = 'on';
-movie(M);
+movie(M, [repeat], fps);
 
