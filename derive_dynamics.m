@@ -8,10 +8,10 @@ syms k0 k1 k2;
 
 q = [q0; q1; q2];
 qdot = [qdot0; qdot1; qdot2];
-l = [l0, l1, l2];
-m = [m0, m1, m2];
+l = [l0; l1; l2];
+m = [m0; m1; m2];
 g = [gx; gy];
-k = [k0, k1, k2];
+k = [k0; k1; k2];
 
 theta0 = alpha + q0;
 theta1 = theta0 + q1;
@@ -70,3 +70,4 @@ matlabFunction(B, 'vars', {q, alpha, l, m}, 'file', strcat(dpath,'/B_fun'), 'Opt
 % matlabFunction(C, 'vars', {q, qdot, alpha, l, m}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
 fprintf('G... ');
 matlabFunction(G, 'vars', {q, alpha, l, m, k, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
+fprintf('\n');
