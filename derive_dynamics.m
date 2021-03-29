@@ -63,6 +63,11 @@ fname = mfilename;
 fpath = mfilename('fullpath');
 dpath = strrep(fpath, fname, '');
 
+fprintf('Generating forward kinematics\n');
+matlabFunction(x_m0, 'vars', {q, alpha, l}, 'file', strcat(dpath,'/q2xm0_fun'), 'Optimize', false);
+matlabFunction(x_m1, 'vars', {q, alpha, l}, 'file', strcat(dpath,'/q2xm1_fun'), 'Optimize', false);
+matlabFunction(x_m2, 'vars', {q, alpha, l}, 'file', strcat(dpath,'/q2xm2_fun'), 'Optimize', false);
+
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
 matlabFunction(B, 'vars', {q, alpha, l, m}, 'file', strcat(dpath,'/B_fun'), 'Optimize', false);
