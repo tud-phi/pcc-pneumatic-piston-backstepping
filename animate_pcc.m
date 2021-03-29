@@ -1,3 +1,5 @@
+% This script uses the outputs of the simulink model saved in the out
+% variable of the workspace
 alpha = out.alpha.Data;
 
 l = out.l.Data;
