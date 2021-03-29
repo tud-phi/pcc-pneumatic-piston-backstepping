@@ -1,4 +1,4 @@
-theta_0 = out.theta_0.Data;
+alpha = out.alpha.Data;
 
 l = out.l.Data;
 l0 = l(:, 1);
@@ -10,11 +10,10 @@ q0 = q(:, 1);
 q1 = q(:, 2);
 q2 = q(:, 3);
 
-k0 = (q0 - theta_0) / l0;
-k1 = (q1 - theta_0 - k0*l0) / l1;
-k2 = (q2 - theta_0 - k0*l0 - k1*l1) / l2;
-k = [k0, k1, k2];
-
+kappa0 = q0/l0;
+kappa1 = q1/l1;
+kappa2 = q2/l2;
+kappa = [kappa0, kappa1, kappa2];
 
 s0 = (0:l0/100:l0)';
 s1 = (0:l1/100:l1)';
@@ -36,18 +35,18 @@ s_m = [l0, 0, 0;
 
 fh = figure;
 fh.Visible = 'off';
-frame_range = 1:50:size(k, 1);
+frame_range = 1:50:size(kappa, 1);
 clear M;
 M(size(frame_range, 2)) = struct('cdata',[],'colormap',[]);
 for it=1:length(frame_range)
     idx = frame_range(it);
     idx
-    k_pcc_t = repmat(k(idx, :), size(s, 1), 1);
-    x_pcc_t = forward_kinematics(theta_0, k_pcc_t, s);
+    kappa_pcc_t = repmat(kappa(idx, :), size(s, 1), 1);
+    x_pcc_t = forward_kinematics(alpha, s, kappa_pcc_t);
     plot(x_pcc_t(:, 1), x_pcc_t(:, 2))
     hold on;
-    k_m_t = repmat(k(idx, :), size(s_m, 1), 1);
-    x_m_t = forward_kinematics(theta_0, k_m_t, s_m);
+    kappa_m_t = repmat(kappa(idx, :), size(s_m, 1), 1);
+    x_m_t = forward_kinematics(alpha, s_m, kappa_m_t);
     plot(x_m_t(:, 1), x_m_t(:, 2), 'r*')
     xlim([-(l0+l1+l2), (l0+l1+l2)]);
     ylim([-(l0+l1+l2), (l0+l1+l2)]);
