@@ -1,3 +1,4 @@
+%% Initialisation
 syms q0 q1 q2;
 syms qdot0 qdot1 qdot2;
 syms alpha;
@@ -13,6 +14,7 @@ m = [m0; m1; m2];
 g = [gx; gy];
 k = [k0; k1; k2];
 
+%% Kinematics
 theta0 = alpha + q0;
 theta1 = theta0 + q1;
 theta2 = theta1 + q2;
@@ -30,12 +32,21 @@ x_m1 = x_m0 + [(sin(theta1)-sin(theta0))/kappa1;
 x_m2 = x_m1 + [(sin(theta2)-sin(theta1))/kappa2;
                -(cos(theta2)-cos(theta1))/kappa2];
            
+% Jacobians
 J_m0_P = jacobian(x_m0, q);
 J_m1_P = jacobian(x_m1, q);
 J_m2_P = jacobian(x_m2, q);
 
+% time derivatives of Jacobians
+Jdot_m0_P = simplify(dAdt(J_m0_P, q, qdot));
+Jdot_m1_P = simplify(dAdt(J_m1_P, q, qdot));
+Jdot_m2_P = simplify(dAdt(J_m2_P, q, qdot));
+
+%% Dynamics
 % B(q) matrix in EOM
+fprintf('Computing mass matrix B ... ');
 B = simplify(J_m0_P'*m(1)*J_m0_P + J_m1_P'*m(2)*J_m1_P + J_m2_P'*m(3)*J_m2_P);
+fprintf('done!\n');
 
 % Kinetic energy of the system
 T = 1/2*qdot'*B*qdot;
@@ -51,12 +62,14 @@ L = T - U;
 % EOM: B(q)*qddot + C(q,qdot)*qdot + G(q) = tau
 
 % C(q, qdot) matrix in EoM
-C = [0; 0; 0];
-% Jdot_m0_P = jacobian(J_m0_P, q) * qdot
-% C = J_m0_P'*m(1)*Jdot_m0_P + J_m1_P'*m(2)*Jdot_m1_P + J_m2_P'*m(3)*Jdot_m2_P
+fprintf('Computing coriolis and centrifugal vector b and simplifying... ');
+C = simplify(J_m0_P'*m(1)*Jdot_m0_P + J_m1_P'*m(2)*Jdot_m1_P + J_m2_P'*m(3)*Jdot_m2_P);
+fprintf('done!\n');
 
 % G(q) vector in EoM
-G = jacobian(U, q)';
+fprintf('Computing gravity vector G... ');
+G = simplify(jacobian(U, q)');
+fprintf('done!\n');
 
 %% Generate matlab functions
 fname = mfilename;
@@ -71,8 +84,8 @@ matlabFunction(x_m2, 'vars', {q, alpha, l}, 'file', strcat(dpath,'/q2xm2_fun'), 
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
 matlabFunction(B, 'vars', {q, alpha, l, m}, 'file', strcat(dpath,'/B_fun'), 'Optimize', false);
-% fprintf('C... ');
-% matlabFunction(C, 'vars', {q, qdot, alpha, l, m}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
+fprintf('C... ');
+matlabFunction(C, 'vars', {q, qdot, alpha, l, m}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
 fprintf('G... ');
 matlabFunction(G, 'vars', {q, alpha, l, m, k, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
 fprintf('\n');
