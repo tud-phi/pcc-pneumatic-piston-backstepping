@@ -53,7 +53,7 @@ T = 1/2*qdot'*B*qdot;
 
 % Potential energy of the system
 U_g = m0*g'*x_m0 + m1*g'*x_m1 + m2*g'*x_m2;
-U_k = 1/2*(k0*theta0^2+k1*theta1^2+k2*theta2^2);
+U_k = 1/2*(k0*q0^2+k1*q1^2+k2*q2^2);
 U = simplify(U_g + U_k);
 
 % Langrangian
