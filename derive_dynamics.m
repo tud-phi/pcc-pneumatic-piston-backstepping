@@ -1,6 +1,7 @@
 %% Initialisation
 syms q0 q1 q2;
 syms qdot0 qdot1 qdot2;
+syms s;
 syms alpha;
 syms l0 l1 l2;
 syms m0 m1 m2;
@@ -15,22 +16,27 @@ g = [gx; gy];
 k = [k0; k1; k2];
 
 %% Kinematics
-theta0 = alpha + q0;
-theta1 = theta0 + q1;
-theta2 = theta1 + q2;
-theta = [theta0; theta1; theta2];
-
 kappa0 = q0/l0;
 kappa1 = q1/l1;
 kappa2 = q2/l2;
 kappa = [kappa0; kappa1; kappa2];
 
-x_m0 = [(sin(theta0)-sin(alpha))/kappa0;
+theta0 = alpha + s*kappa0;
+theta1 = subs(theta0,s,l0) + s*kappa1;
+theta2 = subs(theta1,s,l1) + s*kappa2;
+theta = [theta0; theta1; theta2];
+
+x0 = [(sin(theta0)-sin(alpha))/kappa0;
         -(cos(theta0)-cos(alpha))/kappa0];
-x_m1 = x_m0 + [(sin(theta1)-sin(theta0))/kappa1;
-               -(cos(theta1)-cos(theta0))/kappa1];
-x_m2 = x_m1 + [(sin(theta2)-sin(theta1))/kappa2;
-               -(cos(theta2)-cos(theta1))/kappa2];
+x1 = subs(x0,s,l0) + [(sin(theta1)-sin(subs(theta0,s,l0)))/kappa1;
+                      -(cos(theta1)-cos(subs(theta0,s,l0)))/kappa1];
+x2 = subs(x1,s,l1) + [(sin(theta2)-sin(subs(theta1,s,l1)))/kappa2;
+                      -(cos(theta2)-cos(subs(theta1,s,l1)))/kappa2];
+                  
+% temporary formulation for forward kinematics of point masses
+x_m0 = subs(x0,s,l0);
+x_m1 = subs(x1,s,l1);
+x_m2 = subs(x2,s,l2);
            
 % Jacobians
 J_m0_P = jacobian(x_m0, q);
@@ -76,10 +82,16 @@ fname = mfilename;
 fpath = mfilename('fullpath');
 dpath = strrep(fpath, fname, '');
 
+fprintf('Generating absolute angles theta\n');
+matlabFunction(theta0, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2theta0_fun'), 'Optimize', false);
+matlabFunction(theta1, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2theta1_fun'), 'Optimize', false);
+matlabFunction(theta2, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2theta2_fun'), 'Optimize', false);
+
+
 fprintf('Generating forward kinematics\n');
-matlabFunction(x_m0, 'vars', {q, alpha, l}, 'file', strcat(dpath,'/q2xm0_fun'), 'Optimize', false);
-matlabFunction(x_m1, 'vars', {q, alpha, l}, 'file', strcat(dpath,'/q2xm1_fun'), 'Optimize', false);
-matlabFunction(x_m2, 'vars', {q, alpha, l}, 'file', strcat(dpath,'/q2xm2_fun'), 'Optimize', false);
+matlabFunction(x0, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x0_fun'), 'Optimize', false);
+matlabFunction(x1, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x1_fun'), 'Optimize', false);
+matlabFunction(x2, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x2_fun'), 'Optimize', false);
 
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
