@@ -4,16 +4,22 @@ syms qdot0 qdot1 qdot2;
 syms s;
 syms alpha;
 syms l0 l1 l2;
-syms m0 m1 m2;
+syms rho0 rho1 rho2;
 syms gx gy;
 syms k0 k1 k2;
 
 q = [q0; q1; q2];
 qdot = [qdot0; qdot1; qdot2];
 l = [l0; l1; l2];
-m = [m0; m1; m2];
+rho = [rho0; rho1; rho2];
 g = [gx; gy];
 k = [k0; k1; k2];
+
+% integration of weight per length rho to mass
+m0 = int(rho0,s,0,l(1));
+m1 = int(rho1,s,0,l(2));
+m2 = int(rho2,s,0,l(3));
+m = [m0; m1; m2];
 
 %% Kinematics
 kappa0 = q0/l0;
@@ -43,23 +49,44 @@ J_m0_P = jacobian(x_m0, q);
 J_m1_P = jacobian(x_m1, q);
 J_m2_P = jacobian(x_m2, q);
 
+% parametrisized Jacobians
+J_0P = jacobian(x0, q)
+J_1P = jacobian(x1, q)
+J_2P = jacobian(x2, q);
+return;
+
 % time derivatives of Jacobians
-Jdot_m0_P = simplify(dAdt(J_m0_P, q, qdot));
-Jdot_m1_P = simplify(dAdt(J_m1_P, q, qdot));
-Jdot_m2_P = simplify(dAdt(J_m2_P, q, qdot));
+Jdot_0P = simplify(dAdt(J_0P, q, qdot));
+Jdot_1P = simplify(dAdt(J_1P, q, qdot));
+Jdot_2P = simplify(dAdt(J_2P, q, qdot));
 
 %% Dynamics
 % B(q) matrix in EOM
 fprintf('Computing mass matrix B ... ');
-B = simplify(J_m0_P'*m(1)*J_m0_P + J_m1_P'*m(2)*J_m1_P + J_m2_P'*m(3)*J_m2_P);
+test1 = J_0P'*rho(1)*J_0P
+B0 = int(J_0P'*rho(1)*J_0P, s, 0, l(1))
+test2 = J_1P'*rho(2)*J_1P
+B1 = int(J_1P'*rho(2)*J_1P, s, 0, l(2))
+B2 = int(J_2P'*rho(3)*J_2P, s, 0, l(3));
+B = simplify(B0 + B1 + B2);
 fprintf('done!\n');
 
 % Kinetic energy of the system
 T = 1/2*qdot'*B*qdot;
 
-% Potential energy of the system
-U_g = m0*g'*x_m0 + m1*g'*x_m1 + m2*g'*x_m2;
-U_k = 1/2*(k0*q0^2+k1*q1^2+k2*q2^2);
+% Gravitational potential energy
+U_g0 = int(rho(1)*g'*x0, s, 0, l(1));
+U_g1 = int(rho(2)*g'*x1, s, 0, l(2));
+U_g2 = int(rho(3)*g'*x2, s, 0, l(3));
+U_g = U_g0 + U_g1 + U_g2;
+
+% Elastic potential energy
+U_k0 = int(1/2*k0*kappa0^2, s, 0, l(1));
+U_k1 = int(1/2*k1*kappa1^2, s, 0, l(2));
+U_k2 = int(1/2*k2*kappa2^2, s, 0, l(3));
+U_k = U_k0 + U_k1 + U_k2;
+
+% Total potential energy
 U = simplify(U_g + U_k);
 
 % Langrangian
@@ -69,7 +96,10 @@ L = T - U;
 
 % C(q, qdot) matrix in EoM
 fprintf('Computing coriolis and centrifugal vector b and simplifying... ');
-C = simplify(J_m0_P'*m(1)*Jdot_m0_P + J_m1_P'*m(2)*Jdot_m1_P + J_m2_P'*m(3)*Jdot_m2_P);
+C0 = int(J_0P'*rho(1)*Jdot_0P, s, 0, l(1));
+C1 = int(J_1P'*rho(2)*Jdot_1P, s, 0, l(2));
+C2 = int(J_2P'*rho(3)*Jdot_2P, s, 0, l(3));
+C = simplify(C0 + C1 + C2);
 fprintf('done!\n');
 
 % G(q) vector in EoM
@@ -95,9 +125,9 @@ matlabFunction(x2, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x2_fun'), 
 
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
-matlabFunction(B, 'vars', {q, alpha, l, m}, 'file', strcat(dpath,'/B_fun'), 'Optimize', false);
+matlabFunction(B, 'vars', {q, alpha, l, rho}, 'file', strcat(dpath,'/B_fun'), 'Optimize', false);
 fprintf('C... ');
-matlabFunction(C, 'vars', {q, qdot, alpha, l, m}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
+matlabFunction(C, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
 fprintf('G... ');
-matlabFunction(G, 'vars', {q, alpha, l, m, k, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
+matlabFunction(G, 'vars', {q, alpha, l, rho, k, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
 fprintf('\n');
