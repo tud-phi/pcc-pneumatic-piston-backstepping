@@ -50,10 +50,9 @@ J_m1_P = jacobian(x_m1, q);
 J_m2_P = jacobian(x_m2, q);
 
 % parametrisized Jacobians
-J_0P = jacobian(x0, q)
-J_1P = jacobian(x1, q)
+J_0P = jacobian(x0, q);
+J_1P = jacobian(x1, q);
 J_2P = jacobian(x2, q);
-return;
 
 % time derivatives of Jacobians
 Jdot_0P = simplify(dAdt(J_0P, q, qdot));
@@ -62,12 +61,13 @@ Jdot_2P = simplify(dAdt(J_2P, q, qdot));
 
 %% Dynamics
 % B(q) matrix in EOM
-fprintf('Computing mass matrix B ... ');
-test1 = J_0P'*rho(1)*J_0P
-B0 = int(J_0P'*rho(1)*J_0P, s, 0, l(1))
-test2 = J_1P'*rho(2)*J_1P
-B1 = int(J_1P'*rho(2)*J_1P, s, 0, l(2))
-B2 = int(J_2P'*rho(3)*J_2P, s, 0, l(3));
+fprintf('Computing mass matrix B0 ... ');
+B0 = int(J_0P'*rho(1)*J_0P, s, 0, l(1), 'IgnoreAnalyticConstraints', true)
+fprintf('B1 ...');
+B1 = int(J_1P'*rho(2)*J_1P, s, 0, l(2), 'IgnoreAnalyticConstraints', true)
+fprintf('B2 ...');
+B2 = int(J_2P'*rho(3)*J_2P, s, 0, l(3), 'IgnoreAnalyticConstraints', true)
+fprintf('simplify ...');
 B = simplify(B0 + B1 + B2);
 fprintf('done!\n');
 
