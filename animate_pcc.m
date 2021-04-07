@@ -1,12 +1,20 @@
 % This script uses the outputs of the simulink model saved in the out
 % variable of the workspace
 
-% only consider every n-th datapoint
-num_skip = 25;
 % frames per second
 fps = 10;
 % how many times to repeat the movie
-repeat = 5;
+repeat = 1;
+
+% time information
+time = out.tout;
+% delta between time steps
+delta_t = time(2:end) - time(1:end-1);
+% maximal step size
+max_delta_t = max(delta_t);
+
+% we adjust fps accordingly
+fps = min([fps, 1/max_delta_t])
 
 alpha = out.alpha.Data;
 
@@ -43,27 +51,39 @@ s_m = [l0, 0, 0;
        l0, l1, 0;
        l0, l1, l2];
 
+%% gathering of frames
 fh = figure;
 fh.Visible = 'off';
-frame_range = 1:num_skip:size(kappa, 1);
+sim_range = 1:1:size(kappa, 1);
+num_frames = ceil(time(end)*fps);
 clear M;
-M(size(frame_range, 2)) = struct('cdata',[],'colormap',[]);
-for it=1:length(frame_range)
-    idx = frame_range(it);
-    idx
-    kappa_pcc_t = repmat(kappa(idx, :), size(s, 1), 1);
-    x_pcc_t = forward_kinematics(alpha, s, kappa_pcc_t);
-    plot(x_pcc_t(:, 1), x_pcc_t(:, 2))
-    hold on;
-    kappa_m_t = repmat(kappa(idx, :), size(s_m, 1), 1);
-    x_m_t = forward_kinematics(alpha, s_m, kappa_m_t);
-    plot(x_m_t(:, 1), x_m_t(:, 2), 'r*')
-    xlim([-(l0+l1+l2), (l0+l1+l2)]);
-    ylim([-(l0+l1+l2), (l0+l1+l2)]);
-    hold off;
-    drawnow;
-    M(it) = getframe;
+M(num_frames) = struct('cdata',[],'colormap',[]);
+t_last_frame = -Inf;
+frame_idx = 0;
+f = waitbar(0, 'Creating movie...');
+for sim_idx=1:length(sim_range)
+    t = time(sim_idx);
+    if (t - t_last_frame) >= 1/fps
+        frame_idx = frame_idx + 1;
+        waitbar(frame_idx/num_frames, f);
+        kappa_pcc_t = repmat(kappa(sim_idx, :), size(s, 1), 1);
+        x_pcc_t = forward_kinematics(alpha, s, kappa_pcc_t);
+        plot(x_pcc_t(:, 1), x_pcc_t(:, 2))
+        hold on;
+        kappa_m_t = repmat(kappa(sim_idx, :), size(s_m, 1), 1);
+        x_m_t = forward_kinematics(alpha, s_m, kappa_m_t);
+        plot(x_m_t(:, 1), x_m_t(:, 2), 'r*')
+        xlim([-(l0+l1+l2), (l0+l1+l2)]);
+        ylim([-(l0+l1+l2), (l0+l1+l2)]);
+        hold off;
+        drawnow;
+        M(frame_idx) = getframe;
+        t_last_frame = t;
+    end
 end
+close(f);
+
+%% Display of movie
 fh.Visible = 'on';
 movie(M, [repeat], fps);
 
