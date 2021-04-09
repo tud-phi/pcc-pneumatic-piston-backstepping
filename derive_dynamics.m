@@ -1,3 +1,6 @@
+%% Configuration
+n_b = 3;
+
 %% Initialisation
 syms q0 q1 q2;
 syms qdot0 qdot1 qdot2;
@@ -69,7 +72,23 @@ L = T - U;
 
 % C(q, qdot) matrix in EoM
 fprintf('Computing coriolis and centrifugal vector b and simplifying... ');
-C = simplify(J_m0_P'*m(1)*Jdot_m0_P + J_m1_P'*m(2)*Jdot_m1_P + J_m2_P'*m(3)*Jdot_m2_P);
+% Christoffel symbols
+Gamma = sym(zeros(n_b, n_b, n_b));
+for i=1:n_b
+   for j=1:n_b
+       for k_it=1:n_b
+           Gamma(i,j,k_it) = 1/2*(diff(B(i,j),q(k_it))+diff(B(i,k_it),q(j))-diff(B(j,k_it),q(i)));
+       end
+   end
+end
+C = sym(zeros(n_b,n_b));
+for i=1:n_b
+   Gamma_i = squeeze(Gamma(i,:,:));
+   C(i,:,:) = qdot'*Gamma_i;
+end
+C = simplify(C);
+% C(q, qdot) computed using projected Newton-Euler approach (RSL)
+% C_pne = simplify(J_m0_P'*m(1)*Jdot_m0_P + J_m1_P'*m(2)*Jdot_m1_P + J_m2_P'*m(3)*Jdot_m2_P)
 fprintf('done!\n');
 
 % G(q) vector in EoM
