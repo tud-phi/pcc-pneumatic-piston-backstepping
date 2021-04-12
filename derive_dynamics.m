@@ -7,16 +7,22 @@ syms qdot0 qdot1 qdot2;
 syms s;
 syms alpha;
 syms l0 l1 l2;
-syms m0 m1 m2;
+syms rho0 rho1 rho2;
 syms gx gy;
 syms k0 k1 k2;
 
 q = [q0; q1; q2];
 qdot = [qdot0; qdot1; qdot2];
 l = [l0; l1; l2];
-m = [m0; m1; m2];
+rho = [rho0; rho1; rho2];
 g = [gx; gy];
 k = [k0; k1; k2];
+
+% integration of weight per length rho to mass
+m0 = int(rho(1),s,0,l(1));
+m1 = int(rho(2),s,0,l(2));
+m2 = int(rho(3),s,0,l(3));
+m = [m0; m1; m2];
 
 %% Kinematics
 kappa0 = q0/l0;
