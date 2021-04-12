@@ -60,14 +60,6 @@ fprintf('done!\n');
 % Kinetic energy of the system
 T = 1/2*qdot'*B*qdot;
 
-% Potential energy of the system
-U_g = m0*g'*x_m0 + m1*g'*x_m1 + m2*g'*x_m2;
-U_k = 1/2*(k0*q0^2+k1*q1^2+k2*q2^2);
-U = simplify(U_g + U_k);
-
-% Langrangian
-L = T - U;
-
 % EOM: B(q)*qddot + C(q,qdot)*qdot + G(q) = tau
 
 % C(q, qdot) matrix in EoM
@@ -91,10 +83,34 @@ C = simplify(C);
 % C_pne = simplify(J_m0_P'*m(1)*Jdot_m0_P + J_m1_P'*m(2)*Jdot_m1_P + J_m2_P'*m(3)*Jdot_m2_P)
 fprintf('done!\n');
 
+% Gravitational potential energy
+fprintf('Computing gravitational potential energy... ');
+U_g0 = int(rho(1)*g'*x0, s, 0, l(1));
+U_g1 = int(rho(2)*g'*x1, s, 0, l(2));
+U_g2 = int(rho(3)*g'*x2, s, 0, l(3));
+U_g = U_g0 + U_g1 + U_g2;
+fprintf('done!\n');
+
+% Elastic potential energy
+fprintf('Computing elastic potential energy... ');
+U_k0 = int(1/2*k0*kappa0^2, s, 0, l(1));
+U_k1 = int(1/2*k1*kappa1^2, s, 0, l(2));
+U_k2 = int(1/2*k2*kappa2^2, s, 0, l(3));
+U_k = U_k0 + U_k1 + U_k2;
+fprintf('done!\n');
+
+% Total potential energy
+fprintf('Simplifying potential energy... ');
+U = simplify(U_g + U_k);
+fprintf('done!\n');
+
 % G(q) vector in EoM
 fprintf('Computing gravity vector G... ');
 G = simplify(jacobian(U, q)');
 fprintf('done!\n');
+
+% Langrangian
+L = T - U;
 
 %% Generate matlab functions
 fname = mfilename;
