@@ -119,9 +119,10 @@ fprintf('done!\n');
 L = T - U;
 
 %% Generate matlab functions
-fname = mfilename;
-fpath = mfilename('fullpath');
-dpath = strrep(fpath, fname, '');
+% fname = mfilename;
+% fpath = mfilename('fullpath');
+% dpath = strrep(fpath, fname, '');
+dpath = pwd;
 
 fprintf('Generating absolute angles theta\n');
 matlabFunction(theta0, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2theta0_fun'), 'Optimize', false);
