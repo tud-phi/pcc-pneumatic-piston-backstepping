@@ -31,8 +31,8 @@ kappa2 = q2/l2;
 kappa = [kappa0; kappa1; kappa2];
 
 theta0 = alpha + s*kappa0;
-theta1 = subs(theta(1),s,l0) + s*kappa1;
-theta2 = subs(theta(2),s,l1) + s*kappa2;
+theta1 = subs(theta0,s,l0) + s*kappa1;
+theta2 = subs(theta1,s,l1) + s*kappa2;
 theta = [theta0; theta1; theta2];
 
 x0 = [(sin(theta(1))-sin(alpha))/kappa0;
