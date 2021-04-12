@@ -52,6 +52,11 @@ J_m0_P = jacobian(x_m0, q);
 J_m1_P = jacobian(x_m1, q);
 J_m2_P = jacobian(x_m2, q);
 
+% parametrisized Jacobians
+J_0P = jacobian(x0, q);
+J_1P = jacobian(x1, q);
+J_2P = jacobian(x2, q);
+
 % time derivatives of Jacobians
 Jdot_m0_P = simplify(dAdt(J_m0_P, q, qdot));
 Jdot_m1_P = simplify(dAdt(J_m1_P, q, qdot));
@@ -60,6 +65,9 @@ Jdot_m2_P = simplify(dAdt(J_m2_P, q, qdot));
 %% Dynamics
 % B(q) matrix in EOM
 fprintf('Computing mass matrix B ... ');
+B0_ds = simplify(J_0P'*rho(1)*J_0P);
+B1_ds = simplify(J_1P'*rho(2)*J_1P);
+B2_ds = simplify(J_2P'*rho(3)*J_2P);
 B = simplify(J_m0_P'*m(1)*J_m0_P + J_m1_P'*m(2)*J_m1_P + J_m2_P'*m(3)*J_m2_P);
 fprintf('done!\n');
 
@@ -137,6 +145,9 @@ matlabFunction(x2, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x2_fun'), 
 
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
+matlabFunction(B0_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B0_ds_fun'), 'Optimize', false);
+matlabFunction(B1_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B1_ds_fun'), 'Optimize', false);
+matlabFunction(B2_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B2_ds_fun'), 'Optimize', false);
 matlabFunction(B, 'vars', {q, alpha, l, rho}, 'file', strcat(dpath,'/B_fun'), 'Optimize', false);
 fprintf('C... ');
 matlabFunction(C, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
