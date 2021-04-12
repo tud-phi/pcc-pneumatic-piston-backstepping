@@ -31,16 +31,16 @@ kappa2 = q2/l2;
 kappa = [kappa0; kappa1; kappa2];
 
 theta0 = alpha + s*kappa0;
-theta1 = subs(theta0,s,l0) + s*kappa1;
-theta2 = subs(theta1,s,l1) + s*kappa2;
+theta1 = subs(theta(1),s,l0) + s*kappa1;
+theta2 = subs(theta(2),s,l1) + s*kappa2;
 theta = [theta0; theta1; theta2];
 
-x0 = [(sin(theta0)-sin(alpha))/kappa0;
-        -(cos(theta0)-cos(alpha))/kappa0];
-x1 = subs(x0,s,l0) + [(sin(theta1)-sin(subs(theta0,s,l0)))/kappa1;
-                      -(cos(theta1)-cos(subs(theta0,s,l0)))/kappa1];
-x2 = subs(x1,s,l1) + [(sin(theta2)-sin(subs(theta1,s,l1)))/kappa2;
-                      -(cos(theta2)-cos(subs(theta1,s,l1)))/kappa2];
+x0 = [(sin(theta(1))-sin(alpha))/kappa0;
+        -(cos(theta(1))-cos(alpha))/kappa0];
+x1 = subs(x0,s,l0) + [(sin(theta(2))-sin(subs(theta(1),s,l0)))/kappa1;
+                      -(cos(theta(2))-cos(subs(theta(1),s,l0)))/kappa1];
+x2 = subs(x1,s,l1) + [(sin(theta(3))-sin(subs(theta(2),s,l1)))/kappa2;
+                      -(cos(theta(3))-cos(subs(theta(2),s,l1)))/kappa2];
                   
 % temporary formulation for forward kinematics of point masses
 x_m0 = subs(x0,s,l0);
@@ -137,9 +137,9 @@ matlabFunction(x2, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x2_fun'), 
 
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
-matlabFunction(B, 'vars', {q, alpha, l, m}, 'file', strcat(dpath,'/B_fun'), 'Optimize', false);
+matlabFunction(B, 'vars', {q, alpha, l, rho}, 'file', strcat(dpath,'/B_fun'), 'Optimize', false);
 fprintf('C... ');
-matlabFunction(C, 'vars', {q, qdot, alpha, l, m}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
+matlabFunction(C, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
 fprintf('G... ');
-matlabFunction(G, 'vars', {q, alpha, l, m, k, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
+matlabFunction(G, 'vars', {q, alpha, l, rho, k, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
 fprintf('\n');
