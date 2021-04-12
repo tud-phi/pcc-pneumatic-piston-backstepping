@@ -2,14 +2,22 @@
 n_b = 3;
 
 %% Initialisation
-syms q0 q1 q2;
-syms qdot0 qdot1 qdot2;
-syms s;
-syms alpha;
-syms l0 l1 l2;
-syms rho0 rho1 rho2;
-syms gx gy;
-syms k0 k1 k2;
+syms q0 q1 q2 real;
+syms qdot0 qdot1 qdot2 real;
+syms s real positive;
+syms alpha real;
+syms l0 l1 l2 real positive;
+syms rho0 rho1 rho2 real positive;
+syms gx gy real;
+syms k0 k1 k2 real positive;
+
+assume(s > 0)
+assume(l0 > 0)
+assume(l1 > 0)
+assume(l2 > 0)
+assume(rho0 > 0)
+assume(rho1 > 0)
+assume(rho2 > 0)
 
 q = [q0; q1; q2];
 qdot = [qdot0; qdot1; qdot2];
