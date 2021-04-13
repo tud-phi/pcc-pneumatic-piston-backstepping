@@ -95,7 +95,7 @@ T = 1/2*qdot'*B*qdot;
 % EOM: B(q)*qddot + C(q,qdot)*qdot + G(q) = tau
 
 % C(q, qdot) matrix in EoM
-fprintf('Computing coriolis and centrifugal vector b and simplifying... ');
+fprintf('Computing coriolis and centrifugal matrix C and simplifying... ');
 % Christoffel symbols
 Gamma = sym(zeros(n_b, n_b, n_b));
 for i=1:n_b
