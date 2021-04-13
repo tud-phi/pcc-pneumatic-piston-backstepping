@@ -137,7 +137,7 @@ fprintf('Computing gravitational potential energy... ');
 U_g0 = int(rho(1)*g'*x0, s, 0, l(1));
 U_g1 = int(rho(2)*g'*x1, s, 0, l(2));
 U_g2 = int(rho(3)*g'*x2, s, 0, l(3));
-U_g = U_g0 + U_g1 + U_g2;
+U_g = simplify(U_g0 + U_g1 + U_g2);
 fprintf('done!\n');
 
 % Elastic potential energy
@@ -145,7 +145,7 @@ fprintf('Computing elastic potential energy... ');
 U_k0 = int(1/2*k0*kappa0^2, s, 0, l(1));
 U_k1 = int(1/2*k1*kappa1^2, s, 0, l(2));
 U_k2 = int(1/2*k2*kappa2^2, s, 0, l(3));
-U_k = U_k0 + U_k1 + U_k2;
+U_k = simplify(U_k0 + U_k1 + U_k2);
 fprintf('done!\n');
 
 % Total potential energy
@@ -155,7 +155,7 @@ fprintf('done!\n');
 
 % G(q) vector in EoM
 fprintf('Computing gravity vector G... ');
-G = simplify(jacobian(U, q)');
+G = simplify(jacobian(U_g, q)');
 fprintf('done!\n');
 
 % Langrangian
@@ -187,5 +187,5 @@ matlabFunction(B, 'vars', {q, alpha, l, rho}, 'file', strcat(dpath,'/B_fun'), 'O
 fprintf('C... ');
 matlabFunction(C, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
 fprintf('G... ');
-matlabFunction(G, 'vars', {q, alpha, l, rho, k, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
+matlabFunction(G, 'vars', {q, alpha, l, rho, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
 fprintf('\n');
