@@ -115,7 +115,20 @@ for i=1:n_b
    C(i,:,:) = qdot'*squeeze(Gamma(i,:,:));
 end
 C = simplify(C);
+
 % C(q, qdot) computed using projected Newton-Euler approach (RSL)
+% C0_ds = simplify(J_0P'*rho(1)*Jdot_0P);
+% fprintf('int C0 ... ');
+% C0 = int(C0_ds, s, tol, l(1));
+% C1_ds = simplify(J_1P'*rho(2)*Jdot_1P);
+% fprintf('int C1 ... ');
+% C1 = int(C1_ds, s, tol, l(2));
+% C2_ds = simplify(J_2P'*rho(3)*Jdot_2P);
+% fprintf('int C2 ... ');
+% B2 = int(C2_ds, s, tol, l(3));
+% fprintf('simplify C ... ');
+% C = simplify(C0+C1+C2);
+% only point masses
 % C_pne = simplify(J_m0_P'*m(1)*Jdot_m0_P + J_m1_P'*m(2)*Jdot_m1_P + J_m2_P'*m(3)*Jdot_m2_P)
 fprintf('done!\n');
 
