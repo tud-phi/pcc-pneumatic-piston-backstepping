@@ -55,7 +55,7 @@ x_m0 = subs(x0,s,l(1));
 x_m1 = subs(x1,s,l(2));
 x_m2 = subs(x2,s,l(3));
            
-% Jacobians
+% point mass Jacobians
 J_m0_P = jacobian(x_m0, q);
 J_m1_P = jacobian(x_m1, q);
 J_m2_P = jacobian(x_m2, q);
@@ -65,10 +65,15 @@ J_0P = jacobian(x0, q);
 J_1P = jacobian(x1, q);
 J_2P = jacobian(x2, q);
 
-% time derivatives of Jacobians
+% time derivatives of point mass Jacobians
 Jdot_m0_P = simplify(dAdt(J_m0_P, q, qdot));
 Jdot_m1_P = simplify(dAdt(J_m1_P, q, qdot));
 Jdot_m2_P = simplify(dAdt(J_m2_P, q, qdot));
+
+% time derivatives of point mass Jacobians
+Jdot_0P = simplify(dAdt(J_0P, q, qdot));
+Jdot_1P = simplify(dAdt(J_1P, q, qdot));
+Jdot_2P = simplify(dAdt(J_2P, q, qdot));
 
 %% Dynamics
 % B(q) matrix in EOM
