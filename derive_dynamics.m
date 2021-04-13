@@ -33,27 +33,27 @@ m2 = int(rho(3),s,0,l(3));
 m = [m0; m1; m2];
 
 %% Kinematics
-kappa0 = q0/l0;
-kappa1 = q1/l1;
-kappa2 = q2/l2;
+kappa0 = q0/l(1);
+kappa1 = q1/l(2);
+kappa2 = q2/l(3);
 kappa = [kappa0; kappa1; kappa2];
 
 theta0 = alpha + s*kappa0;
-theta1 = subs(theta0,s,l0) + s*kappa1;
-theta2 = subs(theta1,s,l1) + s*kappa2;
+theta1 = subs(theta0,s,l(1)) + s*kappa1;
+theta2 = subs(theta1,s,l(2)) + s*kappa2;
 theta = [theta0; theta1; theta2];
 
 x0 = [(sin(theta(1))-sin(alpha))/kappa0;
         -(cos(theta(1))-cos(alpha))/kappa0];
-x1 = subs(x0,s,l0) + [(sin(theta(2))-sin(subs(theta(1),s,l0)))/kappa1;
-                      -(cos(theta(2))-cos(subs(theta(1),s,l0)))/kappa1];
-x2 = subs(x1,s,l1) + [(sin(theta(3))-sin(subs(theta(2),s,l1)))/kappa2;
-                      -(cos(theta(3))-cos(subs(theta(2),s,l1)))/kappa2];
+x1 = subs(x0,s,l(1)) + [(sin(theta(2))-sin(subs(theta(1),s,l(1))))/kappa1;
+                      -(cos(theta(2))-cos(subs(theta(1),s,l(1))))/kappa1];
+x2 = subs(x1,s,l(2)) + [(sin(theta(3))-sin(subs(theta(2),s,l(2))))/kappa2;
+                      -(cos(theta(3))-cos(subs(theta(2),s,l(2))))/kappa2];
                   
 % temporary formulation for forward kinematics of point masses
-x_m0 = subs(x0,s,l0);
-x_m1 = subs(x1,s,l1);
-x_m2 = subs(x2,s,l2);
+x_m0 = subs(x0,s,l(1));
+x_m1 = subs(x1,s,l(2));
+x_m2 = subs(x2,s,l(3));
            
 % Jacobians
 J_m0_P = jacobian(x_m0, q);
