@@ -185,7 +185,13 @@ matlabFunction(B1_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B1_d
 matlabFunction(B2_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B2_ds_fun'), 'Optimize', false);
 matlabFunction(B, 'vars', {q, alpha, l, rho}, 'file', strcat(dpath,'/B_fun'), 'Optimize', true);
 fprintf('C... ');
-matlabFunction(C, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
+for i=1:1:n_b
+    for j=1:1:n_b
+        c_fun_name = sprintf('/C%d%d_fun', i, j);
+        matlabFunction(C(i,j), 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,c_fun_name), 'Optimize', true);
+    end
+end
+% matlabFunction(C, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
 fprintf('G... ');
 matlabFunction(G, 'vars', {q, alpha, l, rho, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
 fprintf('\n');
