@@ -107,8 +107,7 @@ for i=1:n_b
 end
 C = sym(zeros(n_b,n_b));
 for i=1:n_b
-   Gamma_i = squeeze(Gamma(i,:,:));
-   C(i,:,:) = qdot'*Gamma_i;
+   C(i,:,:) = qdot'*squeeze(Gamma(i,:,:));
 end
 C = simplify(C);
 % C(q, qdot) computed using projected Newton-Euler approach (RSL)
