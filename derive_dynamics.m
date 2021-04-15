@@ -239,7 +239,8 @@ matlabFunction(G, 'vars', {q, alpha, l, rho, g}, 'file', strcat(dpath,'/G_fun'),
 fprintf('\n');
 
 % actuator dynamics
-fprintf('Generating actuator forces...');
+fprintf('Generating actuator dynamics...');
+matlabFunction(V_C, 'vars', {q, l, b_C, d_C}, 'file', strcat(dpath,'/V_C_fun'), 'Optimize', false);
 fprintf('G_p_mu ... ')
 matlabFunction(G_p_mu, 'vars', {q, mu_p, l, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
 fprintf('G_p_q ... ');
