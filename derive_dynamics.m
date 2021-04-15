@@ -165,14 +165,15 @@ L = T - U;
 syms m_p0 m_p1 m_p2 m_p3 m_p4 m_p5 real positive;
 syms A_p0 A_p1 A_p2 A_p3 A_p4 A_p5 real positive;
 syms mu_p0 mu_p1 mu_p2 mu_p3 mu_p4 mu_p5 real positive;
-syms d_pa d_pb real positive;
-syms b real positive; % thickness of planar soft robot chamber 
+syms d_Ca d_Cb real positive;
+syms b_C real positive; % thickness of planar soft robot chamber 
 
-assume(d_pa < d_pb);
+assume(d_Ca < d_Cb);
 
 m_p = [m_p0; m_p1; m_p2; m_p3; m_p4; m_p5];
 A_p = [A_p0; A_p1; A_p2; A_p3; A_p4; A_p5];
 mu_p = [mu_p0; mu_p1; mu_p2; mu_p3; mu_p4; mu_p5];
+d_C = [d_Ca; d_Cb];
 
 % mass matrix
 M_p = diag(m_p);
@@ -183,8 +184,8 @@ V_p = A_p.*mu_p;
 % volume in chambers vector
 V_C = sym(zeros(length(V_p), 1));
 for i=1:length(q)
-    V_C(2*i-1) = b*(d_pb-d_pa)*(l(i)-q(i)/2*(d_pb-d_pa));
-    V_C(2*i) = b*(-d_pb+d_pa)*(l(i)-q(i)/2*(-d_pb+d_pa));
+    V_C(2*i-1) = b_C*(d_Cb-d_Ca)*(l(i)-q(i)/2*(d_Cb-d_Ca));
+    V_C(2*i) = b_C*(-d_Cb+d_Ca)*(l(i)-q(i)/2*(-d_Cb+d_Ca));
 end
 
 % total volume of fluid stored in system
@@ -240,7 +241,7 @@ fprintf('\n');
 % actuator dynamics
 fprintf('Generating actuator forces...');
 fprintf('G_p_mu ... ')
-matlabFunction(G_p_mu, 'vars', {q, mu_p, l, A_p, b, d_pa, d_pb}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
+matlabFunction(G_p_mu, 'vars', {q, mu_p, l, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
 fprintf('G_p_q ... ');
-matlabFunction(G_p_q, 'vars', {q, mu_p, l, A_p, b, d_pa, d_pb}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
+matlabFunction(G_p_q, 'vars', {q, mu_p, l, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
 fprintf('\n');
