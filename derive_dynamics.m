@@ -185,7 +185,7 @@ V_p = A_p.*mu_p;
 V_C = sym(zeros(length(V_p), 1));
 for i=1:length(q)
     V_C(2*i-1) = b_C*(d_Cb-d_Ca)*(l(i)-q(i)/2*(d_Cb-d_Ca));
-    V_C(2*i) = b_C*(-d_Cb+d_Ca)*(l(i)-q(i)/2*(-d_Cb+d_Ca));
+    V_C(2*i) = b_C*(d_Cb-d_Ca)*(l(i)+q(i)/2*(d_Cb-d_Ca));
 end
 
 % total volume of fluid stored in system
