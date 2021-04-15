@@ -161,6 +161,46 @@ fprintf('done!\n');
 % Langrangian
 L = T - U;
 
+%% Derive actuator dynamics
+syms m_p0 m_p1 m_p2 m_p3 m_p4 m_p5 real positive;
+syms A_p0 A_p1 A_p2 A_p3 A_p4 A_p5 real positive;
+syms mu_p0 mu_p1 mu_p2 mu_p3 mu_p4 mu_p5 real positive;
+syms d_pa d_pb real positive;
+syms b real positive; % thickness of planar soft robot chamber 
+
+assume(d_pa < d_pb);
+
+m_p = [m_p0; m_p1; m_p2; m_p3; m_p4; m_p5];
+A_p = [A_p0; A_p1; A_p2; A_p3; A_p4; A_p5];
+mu_p = [mu_p0; mu_p1; mu_p2; mu_p3; mu_p4; mu_p5];
+
+% mass matrix
+M_p = diag(m_p);
+
+% volume in pistons vector
+V_p = A_p.*mu_p;
+
+% volume in chambers vector
+V_C = sym(zeros(length(V_p), 1));
+for i=1:length(q)
+    V_C(2*i-1) = b*(d_pb-d_pa)*(l(i)-q(i)/2*(d_pb-d_pa));
+    V_C(2*i) = b*(-d_pb+d_pa)*(l(i)-q(i)/2*(-d_pb+d_pa));
+end
+
+% total volume of fluid stored in system
+V = simplify(V_p + V_C);
+
+% potential energy of fluid
+% TODO insert alpha constant
+U_fluid_j = log(V);
+U_fluid = simplify(sum(U_fluid_j, 1));
+
+% force acting on piston
+G_p_mu = simplify(jacobian(U_fluid, mu_p)');
+
+% force acting on the PCC soft robot
+G_p_q = simplify(jacobian(U_fluid, q)');
+
 %% Generate matlab functions
 % fname = mfilename;
 % fpath = mfilename('fullpath');
@@ -192,6 +232,15 @@ for i=1:1:n_b
     end
 end
 % matlabFunction(C, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
-fprintf('G... ');
+
+fprintf('G ... ');
 matlabFunction(G, 'vars', {q, alpha, l, rho, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
+fprintf('\n');
+
+% actuator dynamics
+fprintf('Generating actuator forces...');
+fprintf('G_p_mu ... ')
+matlabFunction(G_p_mu, 'vars', {q, mu_p, l, A_p, b, d_pa, d_pb}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
+fprintf('G_p_q ... ');
+matlabFunction(G_p_mu, 'vars', {q, mu_p, l, A_p, b, d_pa, d_pb}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
 fprintf('\n');
