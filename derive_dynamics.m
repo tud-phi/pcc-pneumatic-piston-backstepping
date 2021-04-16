@@ -165,6 +165,7 @@ L = T - U;
 syms m_p0 m_p1 m_p2 m_p3 m_p4 m_p5 real positive;
 syms A_p0 A_p1 A_p2 A_p3 A_p4 A_p5 real positive;
 syms mu_p0 mu_p1 mu_p2 mu_p3 mu_p4 mu_p5 real positive;
+syms l_p0 l_p1 l_p2 l_p3 l_p4 l_p5 real positive;
 syms d_Ca d_Cb real positive;
 syms b_C real positive; % thickness of planar soft robot chamber 
 
@@ -173,6 +174,7 @@ assume(d_Ca < d_Cb);
 m_p = [m_p0; m_p1; m_p2; m_p3; m_p4; m_p5];
 A_p = [A_p0; A_p1; A_p2; A_p3; A_p4; A_p5];
 mu_p = [mu_p0; mu_p1; mu_p2; mu_p3; mu_p4; mu_p5];
+l_p = [l_p0; l_p1; l_p2; l_p3; l_p4; l_p5];
 d_C = [d_Ca; d_Cb];
 
 % mass matrix
@@ -191,9 +193,20 @@ end
 % total volume of fluid stored in system
 V = simplify(V_p + V_C);
 
+% initial conditions and alpha_air = n*R*T = p*V
+p_atm = 10^5;
+% we assume the piston at initial condition to be fully retracted (e.g. no
+% applied pressure and at mu_p = l_p)
+V0 = subs(V, mu_p, l_p);
+% we assume the robot at initial condition to be at neutral (straight)
+% configuration for purposes of modelling the initial chamber volume
+V0 = subs(V0, q, zeros(length(q), 1));
+% instead of using alpha_air=n*R*T, we use initial volume and atmospheric
+% pressure to determin alpha_air
+alpha_air = p_atm * V0;
+
 % potential energy of fluid
-% TODO insert alpha constant
-U_fluid_j = log(V);
+U_fluid_j = alpha_air .* log(V);
 U_fluid = simplify(sum(U_fluid_j, 1));
 
 % force acting on piston
@@ -244,8 +257,10 @@ fprintf('Volumes ... ')
 matlabFunction(V, 'vars', {q, mu_p, l, A_p, b_C, d_C}, 'file', strcat(dpath,'/V_fun'), 'Optimize', false);
 matlabFunction(V_p, 'vars', {mu_p, A_p}, 'file', strcat(dpath,'/V_p_fun'), 'Optimize', false);
 matlabFunction(V_C, 'vars', {q, l, b_C, d_C}, 'file', strcat(dpath,'/V_C_fun'), 'Optimize', false);
+fprintf('alpha air ... ')
+matlabFunction(alpha_air, 'vars', {l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/alpha_air_fun'), 'Optimize', false);
 fprintf('G_p_mu ... ')
-matlabFunction(G_p_mu, 'vars', {q, mu_p, l, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
+matlabFunction(G_p_mu, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
 fprintf('G_p_q ... ');
-matlabFunction(G_p_q, 'vars', {q, mu_p, l, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
+matlabFunction(G_p_q, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
 fprintf('\n');
