@@ -176,6 +176,7 @@ A_p = [A_p0; A_p1; A_p2; A_p3; A_p4; A_p5];
 mu_p = [mu_p0; mu_p1; mu_p2; mu_p3; mu_p4; mu_p5];
 l_p = [l_p0; l_p1; l_p2; l_p3; l_p4; l_p5];
 d_C = [d_Ca; d_Cb];
+assume(mu_p < l_p);
 
 % mass matrix
 M_p = diag(m_p);
@@ -206,7 +207,8 @@ V0 = subs(V0, q, zeros(length(q), 1));
 alpha_air = p_atm * V0;
 
 % potential energy of fluid
-U_fluid_j = alpha_air .* log(V);
+U_fluid_C = -alpha_air .* log(V_C); % potential energy of fluid in chamber
+U_fluid_j = -alpha_air .* log(V);
 U_fluid = simplify(sum(U_fluid_j, 1));
 
 % force acting on piston
