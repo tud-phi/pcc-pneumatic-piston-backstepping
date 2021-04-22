@@ -183,8 +183,8 @@ d_C = [d_Ca; d_Cb];
 tau_ref = [tau_ref0; tau_ref1; tau_ref2];
 mu_p_t0 = [mu_p0_t0; mu_p1_t0; mu_p2_t0; mu_p3_t0; mu_p4_t0; mu_p5_t0];
 
-assume(mu_p < l_p);
-assume(mu_p_t0 < l_p);
+assume(mu_p <= l_p);
+assume(mu_p_t0 <= l_p);
 
 % mass matrix
 M_p = diag(m_p);
@@ -218,8 +218,7 @@ V0 = subs(V0, q, zeros(length(q), 1));
 alpha_air = p_atm * V0;
 
 % potential energy of fluid
-U_fluid_C = -alpha_air .* log(V_C); % potential energy of fluid in chamber
-U_fluid_j = -alpha_air .* log(V);
+U_fluid_j = -alpha_air .* (log(V) - log(V0) - V./V0 + 1);
 U_fluid = simplify(sum(U_fluid_j, 1));
 
 % force acting on piston
@@ -241,16 +240,13 @@ G_p_q_j_t0 = simplify(subs(G_p_q_j, cat(1,q,mu_p), cat(1,[0;0;0],mu_p_t0)));
 Delta_G_p_q_j_ref = sym(zeros(length(G_p_q_j),1));
 for i=1:length(q)
     Delta_G_p_q_j_ref(2*i-1) = -tau_ref(i)/2;
-    Delta_G_p_q_j_ref(2*i) = tau_ref(i)/2;
+    Delta_G_p_q_j_ref(2*i) = -tau_ref(i)/2;
 end
 
 % inverse of G_p_q to compute mu_p_ref from tau_ref
-G_p_q_j_ref = G_p_q_j_t0 + Delta_G_p_q_j_ref;
-mu_p_ref = simplify(1./A_p .* (dV_C_dq./G_p_q_j_ref - V_C));
-
-% estimated force / torque by each piston on configuration state (mu_p & q) f
-% basically state observation of distributed tau
-% tau_dist_obs = simplify(sum(jacobian(U_fluid_j, q),2));
+G_p_q_j_ref = simplify(G_p_q_j_t0 + Delta_G_p_q_j_ref);
+% mu_p_ref = simplify(1./A_p .* (dV_C_dq./G_p_q_j_ref - V_C));
+mu_p_ref = simplify(1./A_p.*(1./(1./V0-1./alpha_air.*1./dV_C_dq.*G_p_q_j_ref)-V_C));
 
 %% Generate matlab functions
 % fname = mfilename;
@@ -300,6 +296,8 @@ fprintf('G_p_mu ... ')
 matlabFunction(G_p_mu, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
 fprintf('G_p_q ... ');
 matlabFunction(G_p_q, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
+fprintf('G_p_q_j_ref ... ');
+matlabFunction(G_p_q_j_ref, 'vars', {tau_ref, mu_p_t0, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_j_ref_fun'), 'Optimize', false);
 fprintf('mu_p_ref ... ');
 matlabFunction(mu_p_ref, 'vars', {q, tau_ref, mu_p_t0, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/mu_p_ref_fun'), 'Optimize', false);
 fprintf('\n');
