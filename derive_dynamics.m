@@ -167,7 +167,11 @@ syms A_p0 A_p1 A_p2 A_p3 A_p4 A_p5 real positive;
 syms mu_p0 mu_p1 mu_p2 mu_p3 mu_p4 mu_p5 real positive;
 syms l_p0 l_p1 l_p2 l_p3 l_p4 l_p5 real positive;
 syms d_Ca d_Cb real positive;
-syms b_C real positive; % thickness of planar soft robot chamber 
+syms b_C real positive; % thickness of planar soft robot chamber
+% commanded torques on the soft robot in configuration space
+syms tau_ref0 tau_ref1 tau_ref2 real;
+% initial position of the pistons at t=0
+syms mu_p0_t0 mu_p1_t0 mu_p2_t0 mu_p3_t0 mu_p4_t0 mu_p5_t0 real positive;
 
 assume(d_Ca < d_Cb);
 
@@ -176,7 +180,11 @@ A_p = [A_p0; A_p1; A_p2; A_p3; A_p4; A_p5];
 mu_p = [mu_p0; mu_p1; mu_p2; mu_p3; mu_p4; mu_p5];
 l_p = [l_p0; l_p1; l_p2; l_p3; l_p4; l_p5];
 d_C = [d_Ca; d_Cb];
+tau_ref = [tau_ref0; tau_ref1; tau_ref2];
+mu_p_t0 = [mu_p0_t0; mu_p1_t0; mu_p2_t0; mu_p3_t0; mu_p4_t0; mu_p5_t0];
+
 assume(mu_p < l_p);
+assume(mu_p_t0 < l_p);
 
 % mass matrix
 M_p = diag(m_p);
@@ -186,9 +194,12 @@ V_p = A_p.*mu_p;
 
 % volume in chambers vector
 V_C = sym(zeros(length(V_p), 1));
+dV_C_dq = sym(zeros(length(V_p), 1));
 for i=1:length(q)
     V_C(2*i-1) = b_C*(d_Cb-d_Ca)*(l(i)-q(i)/2*(d_Cb-d_Ca));
     V_C(2*i) = b_C*(d_Cb-d_Ca)*(l(i)+q(i)/2*(d_Cb-d_Ca));
+    dV_C_dq(2*i-1) = simplify(diff(V_C(2*i-1), q(i)));
+    dV_C_dq(2*i) = simplify(diff(V_C(2*i), q(i)));
 end
 
 % total volume of fluid stored in system
@@ -216,10 +227,30 @@ G_p_mu = simplify(jacobian(U_fluid, mu_p)');
 
 % force acting on the PCC soft robot
 G_p_q = simplify(jacobian(U_fluid, q)');
+G_p_q_j = sym(zeros(length(V_C), 1));
+for i=1:length(q)
+    G_p_q_j(2*i-1) = simplify(diff(U_fluid_j(2*i-1), q(i)));
+    G_p_q_j(2*i) = simplify(diff(U_fluid_j(2*i), q(i)));
+end
+
+% initial force by fluid on system by every piston
+G_p_q_j_t0 = simplify(subs(G_p_q_j, cat(1,q,mu_p), cat(1,[0;0;0],mu_p_t0)));
+
+% distribute commanded tau of segment $i$ between left (j) and right (j+1)
+% pistons leading to commanded force by fluid on system by each chamber
+Delta_G_p_q_j_ref = sym(zeros(length(G_p_q_j),1));
+for i=1:length(q)
+    Delta_G_p_q_j_ref(2*i-1) = -tau_ref(i)/2;
+    Delta_G_p_q_j_ref(2*i) = tau_ref(i)/2;
+end
+
+% inverse of G_p_q to compute mu_p_ref from tau_ref
+G_p_q_j_ref = G_p_q_j_t0 + Delta_G_p_q_j_ref;
+mu_p_ref = simplify(1./A_p .* (dV_C_dq./G_p_q_j_ref - V_C));
 
 % estimated force / torque by each piston on configuration state (mu_p & q) f
 % basically state observation of distributed tau
-tau_dist_obs = simplify(sum(jacobian(U_fluid_j, q),2));
+% tau_dist_obs = simplify(sum(jacobian(U_fluid_j, q),2));
 
 %% Generate matlab functions
 % fname = mfilename;
@@ -269,6 +300,6 @@ fprintf('G_p_mu ... ')
 matlabFunction(G_p_mu, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
 fprintf('G_p_q ... ');
 matlabFunction(G_p_q, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
-fprintf('tau_dist_obs ... ');
-matlabFunction(tau_dist_obs, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/tau_dist_obs_fun'), 'Optimize', false);
+fprintf('mu_p_ref ... ');
+matlabFunction(mu_p_ref, 'vars', {q, tau_ref, mu_p_t0, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/mu_p_ref_fun'), 'Optimize', false);
 fprintf('\n');
