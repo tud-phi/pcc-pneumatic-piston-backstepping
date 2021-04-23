@@ -172,6 +172,8 @@ syms b_C real positive; % thickness of planar soft robot chamber
 syms tau_ref0 tau_ref1 tau_ref2 real;
 % initial position of the pistons at t=0
 syms mu_p0_t0 mu_p1_t0 mu_p2_t0 mu_p3_t0 mu_p4_t0 mu_p5_t0 real positive;
+% commanded piston position delta
+syms Delta_mu_p0 Delta_mu_p1 Delta_mu_p2 Delta_mu_p3 Delta_mu_p4 Delta_mu_p5 real;
 
 assume(d_Ca < d_Cb);
 
@@ -182,9 +184,11 @@ l_p = [l_p0; l_p1; l_p2; l_p3; l_p4; l_p5];
 d_C = [d_Ca; d_Cb];
 tau_ref = [tau_ref0; tau_ref1; tau_ref2];
 mu_p_t0 = [mu_p0_t0; mu_p1_t0; mu_p2_t0; mu_p3_t0; mu_p4_t0; mu_p5_t0];
+Delta_mu_p = [Delta_mu_p0; Delta_mu_p1; Delta_mu_p2; Delta_mu_p3; Delta_mu_p4; Delta_mu_p5];
 
 assume(mu_p <= l_p);
 assume(mu_p_t0 <= l_p);
+assume(abs(Delta_mu_p) <= l_p);
 
 % mass matrix
 M_p = diag(m_p);
@@ -235,6 +239,7 @@ end
 % initial force by fluid on system by every piston
 G_p_q_j_t0 = simplify(subs(G_p_q_j, cat(1,q,mu_p), cat(1,[0;0;0],mu_p_t0)));
 
+% balance of force
 % distribute commanded tau of segment $i$ between left (j) and right (j+1)
 % pistons leading to commanded force by fluid on system by each chamber
 Delta_G_p_q_j_ref = sym(zeros(length(G_p_q_j),1));
@@ -247,6 +252,28 @@ end
 G_p_q_j_ref = simplify(G_p_q_j_t0 + Delta_G_p_q_j_ref);
 % mu_p_ref = simplify(1./A_p .* (dV_C_dq./G_p_q_j_ref - V_C));
 mu_p_ref = simplify(1./A_p.*(1./(1./V0-1./alpha_air.*1./dV_C_dq.*G_p_q_j_ref)-V_C));
+
+% balance of piston position
+Delta_mu_p_ref = Delta_mu_p;
+Delta_mu_p_ref_solve_var = sym(zeros(length(q), 1));
+for i=1:length(q)
+   Delta_mu_p_ref(2*i) = -Delta_mu_p(2*i-1);
+   Delta_mu_p_ref_solve_var(i) = Delta_mu_p(2*i-1);
+end
+G_p_q_ref_pb = subs(G_p_q, mu_p, mu_p_t0+Delta_mu_p_ref);
+
+% systems of equations approach
+% eqn_pb = tau_ref == -G_p_q_ref_pb;
+% mu_p_ref_pb = solve(eqn_pb, Delta_mu_p_ref_solve_var);
+
+% single equations approach
+mu_p_ref_pb = sym(zeros(length(Delta_mu_p),1));
+for i=1:length(q)
+   eqn_pb_i = tau_ref(i) == -G_p_q_ref_pb(i);
+   Delta_mu_p_i_sol = solve(eqn_pb_i, Delta_mu_p(2*i-1), Real=true);
+   mu_p_ref_pb(2*i-1) = mu_p_t0(2*i-1) + Delta_mu_p_i_sol(1);
+   mu_p_ref_pb(2*i) = mu_p_t0(2*i) - Delta_mu_p_i_sol(1);
+end
 
 %% Generate matlab functions
 % fname = mfilename;
