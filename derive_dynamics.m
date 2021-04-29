@@ -25,6 +25,7 @@ l = [l0; l1; l2];
 rho = [rho0; rho1; rho2];
 g = [gx; gy];
 k = [k0; k1; k2];
+K = diag([k0; k1; k2]);
 
 % integration of weight per length rho to mass
 m0 = int(rho(1),s,0,l(1));
@@ -142,9 +143,9 @@ fprintf('done!\n');
 
 % Elastic potential energy
 fprintf('Computing elastic potential energy... ');
-U_k0 = int(1/2*k0*kappa0^2, s, 0, l(1));
-U_k1 = int(1/2*k1*kappa1^2, s, 0, l(2));
-U_k2 = int(1/2*k2*kappa2^2, s, 0, l(3));
+U_k0 = int(1/2*k(1)*kappa0^2, s, 0, l(1));
+U_k1 = int(1/2*k(2)*kappa1^2, s, 0, l(2));
+U_k2 = int(1/2*k(3)*kappa2^2, s, 0, l(3));
 U_k = simplify(U_k0 + U_k1 + U_k2);
 fprintf('done!\n');
 
