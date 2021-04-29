@@ -3,6 +3,7 @@ n_b = 3;
 
 %% Initialisation
 syms q0 q1 q2 real;
+syms q_ref0 q_ref1 q_ref2 real;
 syms qdot0 qdot1 qdot2 real;
 syms s real positive;
 syms alpha real;
@@ -20,6 +21,7 @@ assume(rho1 > 0)
 assume(rho2 > 0)
 
 q = [q0; q1; q2];
+q_ref = [q_ref0; q_ref1; q_ref2];
 qdot = [qdot0; qdot1; qdot2];
 l = [l0; l1; l2];
 rho = [rho0; rho1; rho2];
