@@ -164,6 +164,9 @@ fprintf('done!\n');
 % Langrangian
 L = T - U;
 
+% set point control using gravity compensation
+tau_ref_spc = K*q_ref + G;
+
 %% Derive actuator dynamics
 syms m_p0 m_p1 m_p2 m_p3 m_p4 m_p5 real positive;
 syms A_p0 A_p1 A_p2 A_p3 A_p4 A_p5 real positive;
@@ -242,6 +245,7 @@ end
 % initial force by fluid on system by every piston
 G_p_q_j_t0 = simplify(subs(G_p_q_j, cat(1,q,mu_p), cat(1,[0;0;0],mu_p_t0)));
 
+%% Actuation control
 % balance of force
 % distribute commanded tau of segment $i$ between left (j) and right (j+1)
 % pistons leading to commanded force by fluid on system by each chamber
@@ -291,6 +295,11 @@ end
 
 fprintf('G ... ');
 matlabFunction(G, 'vars', {q, alpha, l, rho, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
+fprintf('\n');
+
+% PCC controllers
+fprintf('Generating tau_ref_spc fun ... ');
+matlabFunction(tau_ref_spc, 'vars', {q, q_ref, alpha, l, rho, g, k}, 'file', strcat(dpath,'/tau_ref_spc_fun'), 'Optimize', false);
 fprintf('\n');
 
 % actuator dynamics
