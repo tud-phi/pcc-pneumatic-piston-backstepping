@@ -12,14 +12,6 @@ syms rho0 rho1 rho2 real positive;
 syms gx gy real;
 syms k0 k1 k2 real positive;
 
-assume(s > 0)
-assume(l0 > 0)
-assume(l1 > 0)
-assume(l2 > 0)
-assume(rho0 > 0)
-assume(rho1 > 0)
-assume(rho2 > 0)
-
 q = [q0; q1; q2];
 q_ref = [q_ref0; q_ref1; q_ref2];
 qdot = [qdot0; qdot1; qdot2];
@@ -28,6 +20,10 @@ rho = [rho0; rho1; rho2];
 g = [gx; gy];
 k = [k0; k1; k2];
 K = diag([k0; k1; k2]);
+
+assume(s > 0)
+assume(l > 0)
+assume(rho > 0)
 
 % integration of weight per length rho to mass
 m0 = int(rho(1),s,0,l(1));
