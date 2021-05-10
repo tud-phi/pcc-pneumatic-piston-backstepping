@@ -329,3 +329,9 @@ matlabFunction(G_p_q_j_ref, 'vars', {tau_ref, mu_p_t0, l, l_p, A_p, b_C, d_C}, '
 fprintf('mu_p_ref ... ');
 matlabFunction(mu_p_ref, 'vars', {q, tau_ref, mu_p_t0, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/mu_p_ref_fun'), 'Optimize', false);
 fprintf('\n');
+
+% backstepping controller
+fprintf('Generating backstepping controller ... ');
+fprintf('Gamma ... ');
+matlabFunction(Gamma, 'vars', {q, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/Gamma_fun'), 'Optimize', false);
+fprintf('\n');
