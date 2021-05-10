@@ -1,5 +1,6 @@
 %% Configuration
-n_b = 3;
+n_b = 3; % dimension of configuration space
+n_C = 6; % number of chambers
 
 %% Initialisation
 syms q0 q1 q2 real;
@@ -255,6 +256,19 @@ end
 G_p_q_j_ref = simplify(G_p_q_j_t0 + Delta_G_p_q_j_ref);
 % mu_p_ref = simplify(1./A_p .* (dV_C_dq./G_p_q_j_ref - V_C));
 mu_p_ref = simplify(1./A_p.*(1./(1./V0-1./alpha_air.*1./dV_C_dq.*G_p_q_j_ref)-V_C));
+% Controller for piston position using set point control with gravity
+% compensation
+Gamma = simplify(subs(mu_p_ref, tau_ref, tau_ref_spc));
+%% Backstepping
+% Lemma 1
+S = sym(zeros(length(q), length(mu_p)));
+for i=1:length(q)
+   for j=1:length(mu_p)
+       S(i,j) = alpha_air(j)*dV_C_dq(j)*A_p(j) / ...
+                ((V_C(j)+A_p(j)*mu_p(j))*(V_C(j)+A_p(j)*Gamma(j)));
+   end
+end
+S = simplify(S);
 
 
 %% Generate matlab functions
