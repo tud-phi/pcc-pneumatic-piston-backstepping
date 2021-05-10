@@ -259,6 +259,11 @@ mu_p_ref = simplify(1./A_p.*(1./(1./V0-1./alpha_air.*1./dV_C_dq.*G_p_q_j_ref)-V_
 % Controller for piston position using set point control with gravity
 % compensation
 Gamma = simplify(subs(mu_p_ref, tau_ref, tau_ref_spc));
+fprintf('Computing Gamma_dot ... ');
+dGamma_dq = jacobian(Gamma, q);
+Gamma_dot = dGamma_dq * qdot;
+fprintf('done!\n');
+
 %% Backstepping
 % Lemma 1
 S = sym(zeros(length(q), length(mu_p)));
@@ -334,4 +339,6 @@ fprintf('\n');
 fprintf('Generating backstepping controller ... ');
 fprintf('Gamma ... ');
 matlabFunction(Gamma, 'vars', {q, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/Gamma_fun'), 'Optimize', false);
+fprintf('Gamma_dot ... ');
+matlabFunction(Gamma_dot, 'vars', {q, qdot, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/Gamma_dot_fun'), 'Optimize', false);
 fprintf('\n');
