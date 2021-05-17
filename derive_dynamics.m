@@ -285,6 +285,7 @@ for i=1:length(q)
    end
 end
 S = simplify(S);
+S_dot = dAdt(S,q,qdot);
 
 
 %% Generate matlab functions
@@ -362,4 +363,6 @@ fprintf('dGamma_dot_dq ... ');
 matlabFunction(dGamma_dot_dq, 'vars', {q, qdot, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/dGamma_dot_dq_fun'), 'Optimize', false);
 fprintf('S ... ');
 matlabFunction(S, 'vars', {q, q_ref, mu_p, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/S_fun'), 'Optimize', false);
+fprintf('S_dot ... ');
+matlabFunction(S_dot, 'vars', {q, qdot, q_ref, mu_p, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/S_dot_fun'), 'Optimize', false);
 fprintf('\n');
