@@ -20,7 +20,7 @@ l = [l0; l1; l2];
 rho = [rho0; rho1; rho2];
 g = [gx; gy];
 k = [k0; k1; k2];
-K = diag([k0; k1; k2]);
+K = diag(k);
 
 assume(s > 0)
 assume(l > 0)
@@ -162,7 +162,10 @@ fprintf('done!\n');
 L = T - U;
 
 % set point control using gravity compensation
-tau_ref_spc = K*q_ref + G;
+tau_ref_spc = K*q_ref + G; % controller
+H_spc = simplify(0.5*qdot'*B*qdot + 0.5*q'*K*q); % lyapunov function
+dH_spc_dqdot = simplify(jacobian(H_spc, qdot));
+ddH_spc_dq_dqdot = simplify(jacobian(dH_spc_dqdot', q));
 
 %% Derive actuator dynamics
 syms m_p0 m_p1 m_p2 m_p3 m_p4 m_p5 real positive;
@@ -314,8 +317,12 @@ matlabFunction(G, 'vars', {q, alpha, l, rho, g}, 'file', strcat(dpath,'/G_fun'),
 fprintf('\n');
 
 % PCC controllers
-fprintf('Generating tau_ref_spc fun ... ');
+fprintf('Generating set point controller fun ... ');
 matlabFunction(tau_ref_spc, 'vars', {q, q_ref, alpha, l, rho, g, k}, 'file', strcat(dpath,'/tau_ref_spc_fun'), 'Optimize', false);
+fprintf('lyapunov function fun ... ');
+matlabFunction(H_spc, 'vars', {q, qdot, alpha, l, rho, k}, 'file', strcat(dpath,'/H_spc_fun'), 'Optimize', false);
+matlabFunction(dH_spc_dqdot, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/dH_spc_dqdot_fun'), 'Optimize', false);
+matlabFunction(ddH_spc_dq_dqdot, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/ddH_spc_dq_dqdot_fun'), 'Optimize', false);
 fprintf('\n');
 
 % actuator dynamics
