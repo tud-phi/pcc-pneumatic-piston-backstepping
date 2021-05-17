@@ -7,6 +7,7 @@ n_C = 6; % number of chambers
 syms q0 q1 q2 real;
 syms q_ref0 q_ref1 q_ref2 real;
 syms qdot0 qdot1 qdot2 real;
+syms qddot0 qddot1 qddot2 real;
 syms s real positive;
 syms alpha real;
 syms l0 l1 l2 real positive;
@@ -17,6 +18,7 @@ syms k0 k1 k2 real positive;
 q = [q0; q1; q2];
 q_ref = [q_ref0; q_ref1; q_ref2];
 qdot = [qdot0; qdot1; qdot2];
+qddot = [qddot0; qddot1; qddot2];
 l = [l0; l1; l2];
 rho = [rho0; rho1; rho2];
 g = [gx; gy];
@@ -171,7 +173,7 @@ L = T - U;
 tau_ref_spc = K*q_ref + G; % controller
 H_spc = simplify(0.5*qdot'*B*qdot + 0.5*q'*K*q); % lyapunov function
 dH_spc_dqdot = simplify(jacobian(H_spc, qdot));
-ddH_spc_dq_dqdot = simplify(jacobian(dH_spc_dqdot', q));
+dH_spc_dqdot_dot = simplify(dAdt(dH_spc_dqdot',q,qdot) + dAdt(dH_spc_dqdot',qdot,qddot));
 
 %% Derive actuator dynamics
 syms m_p0 m_p1 m_p2 m_p3 m_p4 m_p5 real positive;
@@ -328,10 +330,10 @@ fprintf('\n');
 % PCC controllers
 fprintf('Generating set point controller fun ... ');
 matlabFunction(tau_ref_spc, 'vars', {q, q_ref, alpha, l, rho, g, k}, 'file', strcat(dpath,'/tau_ref_spc_fun'), 'Optimize', false);
-fprintf('lyapunov function fun ... ');
+fprintf('Lyapunov candidate fun ... ');
 matlabFunction(H_spc, 'vars', {q, qdot, alpha, l, rho, k}, 'file', strcat(dpath,'/H_spc_fun'), 'Optimize', false);
 matlabFunction(dH_spc_dqdot, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/dH_spc_dqdot_fun'), 'Optimize', false);
-matlabFunction(ddH_spc_dq_dqdot, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/ddH_spc_dq_dqdot_fun'), 'Optimize', false);
+matlabFunction(dH_spc_dqdot_dot, 'vars', {q, qdot, qddot, alpha, l, rho}, 'file', strcat(dpath,'/dH_spc_dqdot_dot_fun'), 'Optimize', false);
 fprintf('\n');
 
 % actuator dynamics
