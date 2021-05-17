@@ -1,6 +1,7 @@
 %% Configuration
 n_b = 3; % dimension of configuration space
 n_C = 6; % number of chambers
+% q_max = pi/2; % maximum assumed generalized coordinates
 
 %% Initialisation
 syms q0 q1 q2 real;
@@ -22,6 +23,9 @@ g = [gx; gy];
 k = [k0; k1; k2];
 K = diag(k);
 
+% assume(q ~= 0)
+% assume(abs(q) < q_max)
+% assume(abs(q_ref) < q_max)
 assume(s > 0)
 assume(l > 0)
 assume(rho > 0)
@@ -284,7 +288,7 @@ S = simplify(S);
 % fname = mfilename;
 % fpath = mfilename('fullpath');
 % dpath = strrep(fpath, fname, '');
-dpath = pwd;
+dpath = fullfile(pwd, 'funs');
 
 fprintf('Generating absolute angles theta\n');
 matlabFunction(theta0, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2theta0_fun'), 'Optimize', false);
