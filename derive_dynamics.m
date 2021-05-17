@@ -96,8 +96,8 @@ B2 = int(B2_ds, s, tol, l(3));
 fprintf('simplify B ... ');
 % B = simplify(J_m0_P'*m(1)*J_m0_P + J_m1_P'*m(2)*J_m1_P + J_m2_P'*m(3)*J_m2_P);
 B = simplify(B0+B1+B2);
-fprintf('dB_dq ... ');
-dB_dq = simplify(jacobian(B, q));
+fprintf('B_dot ... ');
+B_dot = simplify(dAdt(B, q, qdot));
 fprintf('done!\n');
 
 % Kinetic energy of the system
@@ -307,10 +307,11 @@ matlabFunction(x2, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x2_fun'), 
 
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
-matlabFunction(B0_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B0_ds_fun'), 'Optimize', false);
-matlabFunction(B1_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B1_ds_fun'), 'Optimize', false);
-matlabFunction(B2_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B2_ds_fun'), 'Optimize', false);
+% matlabFunction(B0_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B0_ds_fun'), 'Optimize', false);
+% matlabFunction(B1_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B1_ds_fun'), 'Optimize', false);
+% matlabFunction(B2_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B2_ds_fun'), 'Optimize', false);
 matlabFunction(B, 'vars', {q, alpha, l, rho}, 'file', strcat(dpath,'/B_fun'), 'Optimize', true);
+matlabFunction(B_dot, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/B_dot_fun'), 'Optimize', true);
 fprintf('C... ');
 % for i=1:1:n_b
 %     for j=1:1:n_b
