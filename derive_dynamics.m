@@ -96,6 +96,8 @@ B2 = int(B2_ds, s, tol, l(3));
 fprintf('simplify B ... ');
 % B = simplify(J_m0_P'*m(1)*J_m0_P + J_m1_P'*m(2)*J_m1_P + J_m2_P'*m(3)*J_m2_P);
 B = simplify(B0+B1+B2);
+fprintf('dB_dq ... ');
+dB_dq = simplify(jacobian(B, q));
 fprintf('done!\n');
 
 % Kinetic energy of the system
@@ -271,6 +273,7 @@ Gamma = simplify(subs(mu_p_ref, tau_ref, tau_ref_spc));
 fprintf('Computing Gamma_dot ... ');
 dGamma_dq = jacobian(Gamma, q);
 Gamma_dot = dGamma_dq * qdot;
+dGamma_dot_dq = jacobian(Gamma_dot, q);
 fprintf('done!\n');
 
 % Lemma 1
@@ -351,8 +354,12 @@ fprintf('\n');
 fprintf('Generating backstepping controller ... ');
 fprintf('Gamma ... ');
 matlabFunction(Gamma, 'vars', {q, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/Gamma_fun'), 'Optimize', false);
+fprintf('dGamma_dq ... ');
+matlabFunction(dGamma_dq, 'vars', {q, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/dGamma_dq_fun'), 'Optimize', false);
 fprintf('Gamma_dot ... ');
 matlabFunction(Gamma_dot, 'vars', {q, qdot, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/Gamma_dot_fun'), 'Optimize', false);
-fprintf('Gamma_dot ... ');
+fprintf('dGamma_dot_dq ... ');
+matlabFunction(dGamma_dot_dq, 'vars', {q, qdot, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/dGamma_dot_dq_fun'), 'Optimize', false);
+fprintf('S ... ');
 matlabFunction(S, 'vars', {q, q_ref, mu_p, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/S_fun'), 'Optimize', false);
 fprintf('\n');
