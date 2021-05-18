@@ -1,11 +1,16 @@
+%% Run init
+init
+
+%% Parameters
 % This script uses the outputs of the simulink model saved in the out
 % variable of the workspace
 
 % frames per second
-fps = 10;
+fps = 20;
 % how many times to repeat the movie
 repeat = 1;
 
+%% Animation
 % time information
 time = out.tout;
 % delta between time steps
@@ -17,39 +22,35 @@ max_delta_t = max(delta_t);
 fps = min([fps, 1/max_delta_t])
 
 alpha = out.alpha.Data;
-
-l = out.l.Data;
-l0 = l(:, 1);
-l1 = l(:, 2);
-l2 = l(:, 3);
+out_l = out.l.Data;
 
 q = out.q.Data;
 q0 = q(:, 1);
 q1 = q(:, 2);
 q2 = q(:, 3);
 
-kappa0 = q0/l0;
-kappa1 = q1/l1;
-kappa2 = q2/l2;
+kappa0 = q0/out_l(1);
+kappa1 = q1/out_l(2);
+kappa2 = q2/out_l(3);
 kappa = [kappa0, kappa1, kappa2];
 
-s0 = (0:l0/100:l0)';
-s1 = (0:l1/100:l1)';
-s2 = (0:l2/100:l2)';
+s0 = (0:out_l(1)/100:out_l(1))';
+s1 = (0:out_l(2)/100:out_l(2))';
+s2 = (0:out_l(3)/100:out_l(3))';
 s = zeros(size(s0, 1)+size(s1, 1)+size(s2, 1), 3);
 s(1:size(s0, 1), 1) = s0;
 s(1:size(s0, 1), 2) = 0;
 s(1:size(s0, 1), 3) = 0;
-s(1+size(s0, 1):size(s0, 1)+size(s1, 1), 1) = l0;
+s(1+size(s0, 1):size(s0, 1)+size(s1, 1), 1) = out_l(1);
 s(1+size(s0, 1):size(s0, 1)+size(s1, 1), 2) = s1;
 s(1+size(s0, 1):size(s0, 1)+size(s1, 1), 3) = 0;
-s(1+size(s0, 1)+size(s1, 1):size(s0, 1)+size(s1, 1)+size(s2, 1), 1) = l0;
-s(1+size(s0, 1)+size(s1, 1):size(s0, 1)+size(s1, 1)+size(s2, 1), 2) = l1;
+s(1+size(s0, 1)+size(s1, 1):size(s0, 1)+size(s1, 1)+size(s2, 1), 1) = out_l(1);
+s(1+size(s0, 1)+size(s1, 1):size(s0, 1)+size(s1, 1)+size(s2, 1), 2) = out_l(2);
 s(1+size(s0, 1)+size(s1, 1):size(s0, 1)+size(s1, 1)+size(s2, 1), 3) = s2;
 
-s_m = [l0, 0, 0;
-       l0, l1, 0;
-       l0, l1, l2];
+s_m = [out_l(1), 0, 0;
+       out_l(1), out_l(2), 0;
+       out_l(1), out_l(2), out_l(3)];
 
 %% gathering of frames
 fh = figure;
@@ -73,8 +74,8 @@ for sim_idx=1:length(sim_range)
         kappa_m_t = repmat(kappa(sim_idx, :), size(s_m, 1), 1);
         x_m_t = forward_kinematics(alpha, s_m, kappa_m_t);
         plot(x_m_t(:, 1), x_m_t(:, 2), 'r*')
-        xlim([-(l0+l1+l2), (l0+l1+l2)]);
-        ylim([-(l0+l1+l2), (l0+l1+l2)]);
+        xlim([-(sum(l)), (sum(l))]);
+        ylim([-(sum(l)), (sum(l))]);
         hold off;
         drawnow;
         M(frame_idx) = getframe;
