@@ -1,7 +1,5 @@
-%% Configuration
-n_b = 3; % dimension of configuration space
-n_C = 6; % number of chambers
-% q_max = pi/2; % maximum assumed generalized coordinates
+%% Run init
+init
 
 %% Initialisation
 syms q0 q1 q2 real;
@@ -10,8 +8,6 @@ syms qdot0 qdot1 qdot2 real;
 syms qddot0 qddot1 qddot2 real;
 syms s real positive;
 syms alpha real;
-syms l0 l1 l2 real positive;
-syms rho0 rho1 rho2 real positive;
 syms gx gy real;
 syms k0 k1 k2 real positive;
 
@@ -19,8 +15,6 @@ q = [q0; q1; q2];
 q_ref = [q_ref0; q_ref1; q_ref2];
 qdot = [qdot0; qdot1; qdot2];
 qddot = [qddot0; qddot1; qddot2];
-l = [l0; l1; l2];
-rho = [rho0; rho1; rho2];
 g = [gx; gy];
 k = [k0; k1; k2];
 K = diag(k);
@@ -29,8 +23,7 @@ K = diag(k);
 % assume(abs(q) < q_max)
 % assume(abs(q_ref) < q_max)
 assume(s > 0)
-assume(l > 0)
-assume(rho > 0)
+
 
 % integration of weight per length rho to mass
 m0 = int(rho(1),s,0,l(1));
@@ -297,75 +290,75 @@ S_dot = dAdt(S,q,qdot);
 dpath = fullfile(pwd, 'funs');
 
 fprintf('Generating absolute angles theta\n');
-matlabFunction(theta0, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2theta0_fun'), 'Optimize', false);
-matlabFunction(theta1, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2theta1_fun'), 'Optimize', false);
-matlabFunction(theta2, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2theta2_fun'), 'Optimize', false);
+matlabFunction(theta0, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/q2theta0_fun'), 'Optimize', false);
+matlabFunction(theta1, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/q2theta1_fun'), 'Optimize', false);
+matlabFunction(theta2, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/q2theta2_fun'), 'Optimize', false);
 
 
 fprintf('Generating forward kinematics\n');
-matlabFunction(x0, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x0_fun'), 'Optimize', false);
-matlabFunction(x1, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x1_fun'), 'Optimize', false);
-matlabFunction(x2, 'vars', {s, q, alpha, l}, 'file', strcat(dpath,'/q2x2_fun'), 'Optimize', false);
+matlabFunction(x0, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/q2x0_fun'), 'Optimize', false);
+matlabFunction(x1, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/q2x1_fun'), 'Optimize', false);
+matlabFunction(x2, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/q2x2_fun'), 'Optimize', false);
 
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
-% matlabFunction(B0_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B0_ds_fun'), 'Optimize', false);
-% matlabFunction(B1_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B1_ds_fun'), 'Optimize', false);
-% matlabFunction(B2_ds, 'vars', {s, q, alpha, l, rho}, 'file', strcat(dpath,'/B2_ds_fun'), 'Optimize', false);
-matlabFunction(B, 'vars', {q, alpha, l, rho}, 'file', strcat(dpath,'/B_fun'), 'Optimize', true);
-matlabFunction(B_dot, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/B_dot_fun'), 'Optimize', true);
+% matlabFunction(B0_ds, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/B0_ds_fun'), 'Optimize', false);
+% matlabFunction(B1_ds, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/B1_ds_fun'), 'Optimize', false);
+% matlabFunction(B2_ds, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/B2_ds_fun'), 'Optimize', false);
+matlabFunction(B, 'vars', {q, alpha}, 'file', strcat(dpath,'/B_fun'), 'Optimize', true);
+matlabFunction(B_dot, 'vars', {q, qdot, alpha}, 'file', strcat(dpath,'/B_dot_fun'), 'Optimize', true);
 fprintf('C... ');
 % for i=1:1:n_b
 %     for j=1:1:n_b
 %         c_fun_name = sprintf('/C%d%d_fun', i, j);
-%         matlabFunction(C(i,j), 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,c_fun_name), 'Optimize', true);
+%         matlabFunction(C(i,j), 'vars', {q, qdot, alpha}, 'file', strcat(dpath,c_fun_name), 'Optimize', true);
 %     end
 % end
-matlabFunction(C, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
+matlabFunction(C, 'vars', {q, qdot, alpha}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
 
 fprintf('G ... ');
-matlabFunction(G, 'vars', {q, alpha, l, rho, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
+matlabFunction(G, 'vars', {q, alpha, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
 fprintf('\n');
 
 % PCC controllers
 fprintf('Generating set point controller fun ... ');
-matlabFunction(tau_ref_spc, 'vars', {q, q_ref, alpha, l, rho, g, k}, 'file', strcat(dpath,'/tau_ref_spc_fun'), 'Optimize', false);
+matlabFunction(tau_ref_spc, 'vars', {q, q_ref, alpha, g, k}, 'file', strcat(dpath,'/tau_ref_spc_fun'), 'Optimize', false);
 fprintf('Lyapunov candidate fun ... ');
-matlabFunction(H_spc, 'vars', {q, qdot, alpha, l, rho, k}, 'file', strcat(dpath,'/H_spc_fun'), 'Optimize', false);
-matlabFunction(dH_spc_dqdot, 'vars', {q, qdot, alpha, l, rho}, 'file', strcat(dpath,'/dH_spc_dqdot_fun'), 'Optimize', false);
-matlabFunction(dH_spc_dqdot_dot, 'vars', {q, qdot, qddot, alpha, l, rho}, 'file', strcat(dpath,'/dH_spc_dqdot_dot_fun'), 'Optimize', false);
+matlabFunction(H_spc, 'vars', {q, qdot, alpha, k}, 'file', strcat(dpath,'/H_spc_fun'), 'Optimize', false);
+matlabFunction(dH_spc_dqdot, 'vars', {q, qdot, alpha}, 'file', strcat(dpath,'/dH_spc_dqdot_fun'), 'Optimize', false);
+matlabFunction(dH_spc_dqdot_dot, 'vars', {q, qdot, qddot, alpha}, 'file', strcat(dpath,'/dH_spc_dqdot_dot_fun'), 'Optimize', true);
 fprintf('\n');
 
 % actuator dynamics
 fprintf('Generating actuator dynamics ... ');
 fprintf('Volumes ... ')
-matlabFunction(V, 'vars', {q, mu_p, l, A_p, b_C, d_C}, 'file', strcat(dpath,'/V_fun'), 'Optimize', false);
+matlabFunction(V, 'vars', {q, mu_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/V_fun'), 'Optimize', false);
 matlabFunction(V_p, 'vars', {mu_p, A_p}, 'file', strcat(dpath,'/V_p_fun'), 'Optimize', false);
-matlabFunction(V_C, 'vars', {q, l, b_C, d_C}, 'file', strcat(dpath,'/V_C_fun'), 'Optimize', false);
+matlabFunction(V_C, 'vars', {q, b_C, d_C}, 'file', strcat(dpath,'/V_C_fun'), 'Optimize', false);
 fprintf('alpha air ... ')
-matlabFunction(alpha_air, 'vars', {l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/alpha_air_fun'), 'Optimize', false);
+matlabFunction(alpha_air, 'vars', {l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/alpha_air_fun'), 'Optimize', false);
 fprintf('G_p_mu ... ')
-matlabFunction(G_p_mu, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
+matlabFunction(G_p_mu, 'vars', {q, mu_p, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
 fprintf('G_p_q ... ');
-matlabFunction(G_p_q, 'vars', {q, mu_p, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
+matlabFunction(G_p_q, 'vars', {q, mu_p, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_fun'), 'Optimize', false);
 fprintf('G_p_q_j_ref ... ');
-matlabFunction(G_p_q_j_ref, 'vars', {tau_ref, mu_p_t0, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_j_ref_fun'), 'Optimize', false);
+matlabFunction(G_p_q_j_ref, 'vars', {tau_ref, mu_p_t0, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_q_j_ref_fun'), 'Optimize', false);
 fprintf('mu_p_ref ... ');
-matlabFunction(mu_p_ref, 'vars', {q, tau_ref, mu_p_t0, l, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/mu_p_ref_fun'), 'Optimize', false);
+matlabFunction(mu_p_ref, 'vars', {q, tau_ref, mu_p_t0, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/mu_p_ref_fun'), 'Optimize', false);
 fprintf('\n');
 
 % backstepping controller
 fprintf('Generating backstepping controller ... ');
 fprintf('Gamma ... ');
-matlabFunction(Gamma, 'vars', {q, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/Gamma_fun'), 'Optimize', false);
+matlabFunction(Gamma, 'vars', {q, q_ref, mu_p_t0, alpha, l_p, A_p, b_C, d_C, g, k}, 'file', strcat(dpath,'/Gamma_fun'), 'Optimize', false);
 fprintf('dGamma_dq ... ');
-matlabFunction(dGamma_dq, 'vars', {q, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/dGamma_dq_fun'), 'Optimize', false);
+matlabFunction(dGamma_dq, 'vars', {q, q_ref, mu_p_t0, alpha, l_p, A_p, b_C, d_C, g, k}, 'file', strcat(dpath,'/dGamma_dq_fun'), 'Optimize', false);
 fprintf('Gamma_dot ... ');
-matlabFunction(Gamma_dot, 'vars', {q, qdot, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/Gamma_dot_fun'), 'Optimize', false);
+matlabFunction(Gamma_dot, 'vars', {q, qdot, q_ref, mu_p_t0, alpha, l_p, A_p, b_C, d_C, g, k}, 'file', strcat(dpath,'/Gamma_dot_fun'), 'Optimize', false);
 fprintf('dGamma_dot_dq ... ');
-matlabFunction(dGamma_dot_dq, 'vars', {q, qdot, q_ref, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/dGamma_dot_dq_fun'), 'Optimize', false);
+matlabFunction(dGamma_dot_dq, 'vars', {q, qdot, q_ref, mu_p_t0, alpha, l_p, A_p, b_C, d_C, g, k}, 'file', strcat(dpath,'/dGamma_dot_dq_fun'), 'Optimize', false);
 fprintf('S ... ');
-matlabFunction(S, 'vars', {q, q_ref, mu_p, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/S_fun'), 'Optimize', false);
+matlabFunction(S, 'vars', {q, q_ref, mu_p, mu_p_t0, alpha, l_p, A_p, b_C, d_C, g, k}, 'file', strcat(dpath,'/S_fun'), 'Optimize', false);
 fprintf('S_dot ... ');
-matlabFunction(S_dot, 'vars', {q, qdot, q_ref, mu_p, mu_p_t0, alpha, l, l_p, A_p, b_C, d_C, rho, g, k}, 'file', strcat(dpath,'/S_dot_fun'), 'Optimize', false);
+matlabFunction(S_dot, 'vars', {q, qdot, q_ref, mu_p, mu_p_t0, alpha, l_p, A_p, b_C, d_C, g, k}, 'file', strcat(dpath,'/S_dot_fun'), 'Optimize', false);
 fprintf('\n');
