@@ -302,19 +302,19 @@ matlabFunction(x2, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/q2x2_fun'), 'Op
 
 fprintf('Generating eom scripts... ');
 fprintf('B... ');
-% matlabFunction(B0_ds, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/B0_ds_fun'), 'Optimize', false);
-% matlabFunction(B1_ds, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/B1_ds_fun'), 'Optimize', false);
-% matlabFunction(B2_ds, 'vars', {s, q, alpha}, 'file', strcat(dpath,'/B2_ds_fun'), 'Optimize', false);
-matlabFunction(B, 'vars', {q, alpha}, 'file', strcat(dpath,'/B_fun'), 'Optimize', true);
-matlabFunction(B_dot, 'vars', {q, qdot, alpha}, 'file', strcat(dpath,'/B_dot_fun'), 'Optimize', true);
+% matlabFunction(B0_ds, 'vars', {s, q}, 'file', strcat(dpath,'/B0_ds_fun'), 'Optimize', false);
+% matlabFunction(B1_ds, 'vars', {s, q}, 'file', strcat(dpath,'/B1_ds_fun'), 'Optimize', false);
+% matlabFunction(B2_ds, 'vars', {s, q}, 'file', strcat(dpath,'/B2_ds_fun'), 'Optimize', false);
+matlabFunction(B, 'vars', {q}, 'file', strcat(dpath,'/B_fun'), 'Optimize', true);
+matlabFunction(B_dot, 'vars', {q, qdot}, 'file', strcat(dpath,'/B_dot_fun'), 'Optimize', true);
 fprintf('C... ');
 % for i=1:1:n_b
 %     for j=1:1:n_b
 %         c_fun_name = sprintf('/C%d%d_fun', i, j);
-%         matlabFunction(C(i,j), 'vars', {q, qdot, alpha}, 'file', strcat(dpath,c_fun_name), 'Optimize', true);
+%         matlabFunction(C(i,j), 'vars', {q, qdot}, 'file', strcat(dpath,c_fun_name), 'Optimize', true);
 %     end
 % end
-matlabFunction(C, 'vars', {q, qdot, alpha}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
+matlabFunction(C, 'vars', {q, qdot}, 'file', strcat(dpath,'/C_fun'), 'Optimize', false);
 
 fprintf('G ... ');
 matlabFunction(G, 'vars', {q, alpha, g}, 'file', strcat(dpath,'/G_fun'), 'Optimize', false);
