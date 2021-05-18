@@ -110,17 +110,17 @@ T = 1/2*qdot'*B*qdot;
 % C(q, qdot) matrix in EoM
 fprintf('Computing coriolis and centrifugal matrix C and simplifying... ');
 % Christoffel symbols
-Gamma = sym(zeros(n_b, n_b, n_b));
+Gamma_C = sym(zeros(n_b, n_b, n_b));
 for i=1:n_b
    for j=1:n_b
        for k_it=1:n_b
-           Gamma(i,j,k_it) = 1/2*(diff(B(i,j),q(k_it))+diff(B(i,k_it),q(j))-diff(B(j,k_it),q(i)));
+           Gamma_C(i,j,k_it) = 1/2*(diff(B(i,j),q(k_it))+diff(B(i,k_it),q(j))-diff(B(j,k_it),q(i)));
        end
    end
 end
 C = sym(zeros(n_b,n_b));
 for i=1:n_b
-   C(i,:,:) = qdot'*squeeze(Gamma(i,:,:));
+   C(i,:,:) = qdot'*squeeze(Gamma_C(i,:,:));
 end
 C = simplify(C);
 
