@@ -25,6 +25,8 @@ alpha = out.alpha.Data;
 out_l = out.l.Data;
 
 q = out.q.Data;
+% introduce tolerance for numerical stability
+q = set_min_abs_val(q, 0.005);
 q0 = q(:, 1);
 q1 = q(:, 2);
 q2 = q(:, 3);
