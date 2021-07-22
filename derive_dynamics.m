@@ -1,5 +1,5 @@
-%% Run init
-init
+%% Run startup
+startup
 
 %% Initialisation
 syms q0 q1 q2 real;
