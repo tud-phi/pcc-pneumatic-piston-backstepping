@@ -207,8 +207,8 @@ V_p = A_p.*mu_p;
 V_C = sym(zeros(length(V_p), 1));
 dV_C_dq = sym(zeros(length(V_p), 1));
 for i=1:length(q)
-    V_C(2*i-1) = b_C*(d_Cb-d_Ca)*(l(i)-q(i)/2*(d_Cb-d_Ca));
-    V_C(2*i) = b_C*(d_Cb-d_Ca)*(l(i)+q(i)/2*(d_Cb-d_Ca));
+    V_C(2*i-1) = b_C*(l(i)*(d_Cb-d_Ca)-q(i)/2*(d_Cb^2-d_Ca^2));
+    V_C(2*i) = b_C*(l(i)*(d_Cb-d_Ca)+q(i)/2*(d_Cb^2-d_Ca^2));
     dV_C_dq(2*i-1) = simplify(diff(V_C(2*i-1), q(i)));
     dV_C_dq(2*i) = simplify(diff(V_C(2*i), q(i)));
 end
