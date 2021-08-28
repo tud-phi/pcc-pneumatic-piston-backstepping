@@ -1,5 +1,5 @@
-%% Run init
-init
+%% Run startup
+startup
 
 %% Parameters
 % This script uses the outputs of the simulink model saved in the out
