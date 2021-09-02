@@ -1,7 +1,7 @@
 %% Run startup
 startup
 
-%% Compute input sequence
+%% Compute reference sequence
 sim_duration = 90; % [s]
 ts_rate = 10; % sampling rate of timeseries
 
