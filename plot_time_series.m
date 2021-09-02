@@ -11,7 +11,9 @@ hold on
 title('Configuration $q$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$q$ [$^{\circ}$]', Interpreter='latex');
-ylim([-45 +45]);
+ylim([-120 +45]);
+plot(out_backstepping.q_ref/pi*180);
+set(gca, 'ColorOrderIndex', 1)
 plot(out_backstepping.q/pi*180, '--');
 set(gca, 'ColorOrderIndex', 1)
 plot(out_pid.q/pi*180, ':');
@@ -43,7 +45,7 @@ hold on
 title('Actuation force $f_\mathrm{p}$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$f_\mathrm{p}$ [N]', Interpreter='latex');
-ylim([-500 +500]);
+ylim([-500 0]);
 plot(out_backstepping.f_p, '--');
 set(gca, 'ColorOrderIndex', 1)
 plot(out_pid.f_p, ':');
