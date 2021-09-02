@@ -12,10 +12,10 @@ datavals = zeros(length(timevals), n_b);
 
 start_idx = 1;
 
-% equilibrium position [-108, 21.5, -3.4]' deg
+% equilibrium position
 period_duration = 30;
 stop_idx = start_idx + ts_rate*period_duration;
-datavals(start_idx:stop_idx, :) = repmat(q_eq', ts_rate*period_duration+1, 1)/180*pi;
+datavals(start_idx:stop_idx, :) = repmat(q_eq', ts_rate*period_duration+1, 1);
 start_idx = stop_idx;
 
 % zero position
