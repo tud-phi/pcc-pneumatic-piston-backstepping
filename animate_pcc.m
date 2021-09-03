@@ -36,19 +36,10 @@ kappa1 = q1/out_l(2);
 kappa2 = q2/out_l(3);
 kappa = [kappa0, kappa1, kappa2];
 
-s0 = (0:out_l(1)/100:out_l(1))';
-s1 = (0:out_l(2)/100:out_l(2))';
-s2 = (0:out_l(3)/100:out_l(3))';
-s = zeros(size(s0, 1)+size(s1, 1)+size(s2, 1), 3);
-s(1:size(s0, 1), 1) = s0;
-s(1:size(s0, 1), 2) = 0;
-s(1:size(s0, 1), 3) = 0;
-s(1+size(s0, 1):size(s0, 1)+size(s1, 1), 1) = out_l(1);
-s(1+size(s0, 1):size(s0, 1)+size(s1, 1), 2) = s1;
-s(1+size(s0, 1):size(s0, 1)+size(s1, 1), 3) = 0;
-s(1+size(s0, 1)+size(s1, 1):size(s0, 1)+size(s1, 1)+size(s2, 1), 1) = out_l(1);
-s(1+size(s0, 1)+size(s1, 1):size(s0, 1)+size(s1, 1)+size(s2, 1), 2) = out_l(2);
-s(1+size(s0, 1)+size(s1, 1):size(s0, 1)+size(s1, 1)+size(s2, 1), 3) = s2;
+s1 = gen_s_cartesian_evolution(out_l, 1);
+s2 = gen_s_cartesian_evolution(out_l, 2);
+s3 = gen_s_cartesian_evolution(out_l, 3);
+s = cat(1, s1, s2, s3);
 
 s_m = [out_l(1), 0, 0;
        out_l(1), out_l(2), 0;
