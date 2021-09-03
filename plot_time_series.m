@@ -1,3 +1,7 @@
+%% Run startup
+startup
+
+%% Plot time series
 out_backstepping = load('data/out_backstepping.mat').out;
 out_pid = load('data/out_backstepping_k1-250_k2-100.mat').out;
 
