@@ -27,7 +27,7 @@ start_idx = stop_idx;
 % wave position
 period_duration = 30;
 stop_idx = start_idx + ts_rate*period_duration;
-datavals(start_idx:stop_idx, :) = repmat([30, -30, 15], ts_rate*period_duration+1, 1)/180*pi;
+datavals(start_idx:stop_idx, :) = repmat([-45, -30, -40], ts_rate*period_duration+1, 1)/180*pi;
 start_idx = stop_idx;
 
 qref_ts = timeseries(datavals,timevals);
