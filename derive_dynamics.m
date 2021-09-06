@@ -272,6 +272,7 @@ dGamma_dot_dq = jacobian(Gamma_dot, q);
 fprintf('done!\n');
 
 % Lemma 1
+fprintf('Computing S ... ');
 S = sym(zeros(length(q), length(mu_p)));
 for i=1:length(q)
    for j=1:length(mu_p)
@@ -280,7 +281,9 @@ for i=1:length(q)
    end
 end
 S = simplify(S);
+fprintf('S_dot... ');
 S_dot = dAdt(S,q,qdot);
+fprintf('done!\n');
 
 
 %% Generate matlab functions
