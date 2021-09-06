@@ -225,7 +225,7 @@ V0 = subs(V, mu_p, l_p);
 % configuration for purposes of modelling the initial chamber volume
 V0 = subs(V0, q, zeros(length(q), 1));
 % instead of using alpha_air=n*R*T, we use initial volume and atmospheric
-% pressure to determin alpha_air
+% pressure to determine alpha_air
 alpha_air = p_atm * V0;
 
 % potential energy of fluid
