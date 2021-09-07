@@ -77,17 +77,17 @@ Jdot_2P = simplify(dAdt(J_2P, q, qdot));
 %% Dynamics
 % B(q) matrix in EOM
 % tolerance to prevent divisions-by-zero during integration
-tol = 0.001;
+tol_s = 0.001;
 fprintf('Computing mass matrix B ... ');
 B0_ds = simplify(J_0P'*rho(1)*J_0P);
 fprintf('int B0 ... ');
-B0 = int(B0_ds, s, tol, l(1));
+B0 = int(B0_ds, s, tol_s, l(1));
 B1_ds = simplify(J_1P'*rho(2)*J_1P);
 fprintf('int B1 ... ');
-B1 = int(B1_ds, s, tol, l(2));
+B1 = int(B1_ds, s, tol_s, l(2));
 B2_ds = simplify(J_2P'*rho(3)*J_2P);
 fprintf('int B2 ... ');
-B2 = int(B2_ds, s, tol, l(3));
+B2 = int(B2_ds, s, tol_s, l(3));
 fprintf('simplify B ... ');
 % B = simplify(J_m0_P'*m(1)*J_m0_P + J_m1_P'*m(2)*J_m1_P + J_m2_P'*m(3)*J_m2_P);
 B = simplify(B0+B1+B2);
