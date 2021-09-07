@@ -31,7 +31,7 @@ for time_idx = 1:ts_step_size:length(qref_ts.Time)
         
         for i=1:n_b
             s = gen_s_cartesian_evolution(out_sim.l.Data, i);
-            kappa_pcc_t = repmat(qref_ts.Data(time_idx, :) ./ out_sim.l.Data, size(s, 1), 1);
+            kappa_pcc_t = repmat(set_min_abs_val(qref_ts.Data(time_idx, :), 0.005) ./ out_sim.l.Data, size(s, 1), 1);
             x_pcc_t = forward_kinematics(out_sim.alpha.Data, s, kappa_pcc_t);
             plot(x_pcc_t(:, 1)*100, x_pcc_t(:, 2)*100)
         end
