@@ -9,3 +9,6 @@ rho = 0.99*[1;1;1]; % mass density (per length) of every segment
 
 % equilibrium configuration (experimentally determined)
 q_eq = [-108; 21.5; -3.4]/180*pi;
+
+% minimal q for stability of B, C and G matrices
+tol_q_stable = 1/180*pi;
