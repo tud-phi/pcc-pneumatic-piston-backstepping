@@ -13,7 +13,7 @@ datavals = zeros(length(timevals), n_b);
 start_idx = 1;
 
 % equilibrium position
-period_duration = 30;
+period_duration = 10;
 stop_idx = start_idx + ts_rate*period_duration;
 datavals(start_idx:stop_idx, :) = repmat(q_eq', ts_rate*period_duration+1, 1);
 start_idx = stop_idx;
@@ -21,13 +21,13 @@ start_idx = stop_idx;
 % zero position
 period_duration = 30;
 stop_idx = start_idx + ts_rate*period_duration;
-datavals(start_idx:stop_idx, :) = -5*repmat([1, 1, 1], ts_rate*period_duration+1, 1)/180*pi;
+datavals(start_idx:stop_idx, :) = 0*repmat([1, 1, 1], ts_rate*period_duration+1, 1)/180*pi;
 start_idx = stop_idx;
 
 % wave position
 period_duration = 30;
 stop_idx = start_idx + ts_rate*period_duration;
-datavals(start_idx:stop_idx, :) = repmat([-45, -30, -40], ts_rate*period_duration+1, 1)/180*pi;
+datavals(start_idx:stop_idx, :) = repmat([40, -30, 10], ts_rate*period_duration+1, 1)/180*pi;
 start_idx = stop_idx;
 
 qref_ts = timeseries(datavals,timevals);
