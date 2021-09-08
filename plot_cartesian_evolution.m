@@ -4,11 +4,12 @@ startup
 %% Plot time series
 out_sim = load('data/out_backstepping.mat').out;
 
-f = figure;
+f = figure('Name', 'Cartesian evolution');
 grid on
 box on
 % f.Position(3:4) = [560 420];
 set(gcf,'color','w');
+axis equal
 hold on
 
 % plot cartesian evolution of tip of segments
@@ -42,5 +43,6 @@ for time_idx = 1:ts_step_size:length(qref_ts.Time)
         q_prior = qref_ts.Data(time_idx, :);
     end
 end
-
+xlim([-3 +35]);
+ylim([-32 +14]);
 hold off
