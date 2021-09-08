@@ -17,7 +17,7 @@ xlabel('$x$ [cm]', Interpreter='latex');
 ylabel('$y$ [cm]', Interpreter='latex');
 for i=1:n_b
     xy_data = out_sim.('x'+string(i-1)).Data;
-    plot(xy_data(:, 1)*100, xy_data(:, 2)*100, ':');
+    plot(xy_data(:, 1)*100, xy_data(:, 2)*100, ':', LineWidth=1.5);
 end
 % lgd = legend('segment 1','segment 2', 'segment 3', Interpreter='latex');
 % lgd.FontSize = 8;
@@ -36,7 +36,7 @@ for time_idx = 1:ts_step_size:length(qref_ts.Time)
             s = gen_s_cartesian_evolution(out_sim.l.Data, i);
             kappa_pcc_t = repmat(set_min_abs_val(qref_ts.Data(time_idx, :), 0.005) ./ out_sim.l.Data, size(s, 1), 1);
             x_pcc_t = forward_kinematics(out_sim.alpha.Data, s, kappa_pcc_t);
-            plot(x_pcc_t(:, 1)*100, x_pcc_t(:, 2)*100)
+            plot(x_pcc_t(:, 1)*100, x_pcc_t(:, 2)*100, LineWidth=1.5)
         end
         set(gca, 'ColorOrderIndex', 1)
         

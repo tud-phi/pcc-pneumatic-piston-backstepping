@@ -15,11 +15,11 @@ hold on
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$q$ [$^{\circ}$]', Interpreter='latex');
 ylim([-120 +45]);
-plot(out_backstepping.q_ref/pi*180);
+plot(out_backstepping.q_ref/pi*180, LineWidth=2);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_backstepping.q/pi*180, '--');
+plot(out_backstepping.q/pi*180, '--', LineWidth=2);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_pid.q/pi*180, ':');
+plot(out_pid.q/pi*180, ':', LineWidth=2);
 lgd = legend('$q_1$','$q_2$', '$q_3$', Interpreter='latex');
 lgd.FontSize = 8;
 hold off
@@ -33,9 +33,9 @@ hold on
 % title('Piston position $\mu_\mathrm{p}$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$\mu_\mathrm{p}$ [mm]', Interpreter='latex');
-plot(out_backstepping.mu_p*1000, '--');
+plot(out_backstepping.mu_p*1000, '--', LineWidth=2);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_pid.mu_p*1000, ':');
+plot(out_pid.mu_p*1000, ':', LineWidth=2);
 lgd = legend('$\mu_{\mathrm{p},1,\mathrm{L}}$', ...
              '$\mu_{\mathrm{p},1,\mathrm{R}}$', ...
              '$\mu_{\mathrm{p},2,\mathrm{L}}$', ...
@@ -55,9 +55,9 @@ hold on
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$f_\mathrm{p}$ [N]', Interpreter='latex');
 ylim([-350 0]);
-plot(out_backstepping.f_p, '--');
+plot(out_backstepping.f_p, '--', LineWidth=1);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_pid.f_p, ':');
+plot(out_pid.f_p, ':', LineWidth=1);
 lgd = legend('$f_{\mathrm{p},1,\mathrm{L}}$', ...
              '$f_{\mathrm{p},1,\mathrm{R}}$', ...
              '$f_{\mathrm{p},2,\mathrm{L}}$', ...
