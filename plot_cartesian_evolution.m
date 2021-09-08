@@ -25,7 +25,7 @@ set(gca, 'ColorOrderIndex', 1)
 
 % plot reference robot configurations
 qref_ts = out_sim.q_ref;
-ts_step_size = floor(length(qref_ts.Time) / 100);
+ts_step_size = floor(length(qref_ts.Time) / 5000);
 q_prior = 0;
 for time_idx = 1:ts_step_size:length(qref_ts.Time)
     if q_prior ~= qref_ts.Data(time_idx, :)
@@ -34,15 +34,32 @@ for time_idx = 1:ts_step_size:length(qref_ts.Time)
         
         for i=1:n_b
             s = gen_s_cartesian_evolution(out_sim.l.Data, i);
-            kappa_pcc_t = repmat(set_min_abs_val(qref_ts.Data(time_idx, :), 0.005) ./ out_sim.l.Data, size(s, 1), 1);
-            x_pcc_t = forward_kinematics(out_sim.alpha.Data, s, kappa_pcc_t);
-            plot(x_pcc_t(:, 1)*100, x_pcc_t(:, 2)*100, LineWidth=1.5)
+            kappa_pcc_ref_t = repmat(set_min_abs_val(qref_ts.Data(time_idx, :), 0.001) ./ out_sim.l.Data, size(s, 1), 1);
+            x_pcc_ref_t = forward_kinematics(out_sim.alpha.Data, s, kappa_pcc_ref_t);
+            plot(x_pcc_ref_t(:, 1)*100, x_pcc_ref_t(:, 2)*100, 'k', LineWidth=6)
         end
-        set(gca, 'ColorOrderIndex', 1)
+        
+        if time_idx > 1
+            for i=1:n_b
+                s = gen_s_cartesian_evolution(out_sim.l.Data, i);
+                kappa_pcc_steady_t = repmat(set_min_abs_val(out_sim.q.Data(time_idx-1, :), 0.001) ./ out_sim.l.Data, size(s, 1), 1);
+                x_pcc_steady_t = forward_kinematics(out_sim.alpha.Data, s, kappa_pcc_steady_t);
+                plot(x_pcc_steady_t(:, 1)*100, x_pcc_steady_t(:, 2)*100, LineWidth=2.5)
+            end
+            set(gca, 'ColorOrderIndex', 1)
+        end
         
         q_prior = qref_ts.Data(time_idx, :);
     end
 end
+for i=1:n_b
+    s = gen_s_cartesian_evolution(out_sim.l.Data, i);
+    kappa_pcc_steady_t = repmat(set_min_abs_val(out_sim.q.Data(end, :), 0.001) ./ out_sim.l.Data, size(s, 1), 1);
+    x_pcc_steady_t = forward_kinematics(out_sim.alpha.Data, s, kappa_pcc_steady_t);
+    plot(x_pcc_steady_t(:, 1)*100, x_pcc_steady_t(:, 2)*100, LineWidth=2.5)
+end
+set(gca, 'ColorOrderIndex', 1)
+
 xlim([-3 +35]);
 ylim([-32 +14]);
 hold off
