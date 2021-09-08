@@ -6,6 +6,8 @@ out_backstepping = load('data/out_backstepping.mat').out;
 out_pid = load('data/out_backstepping_k1-250_k2-100.mat').out;
 
 f = figure('Name', 'Configuration time series');
+grid on
+box on
 % f.Position(3:4) = [560 2*420];
 set(gcf,'color','w');
 hold on
@@ -24,6 +26,8 @@ hold off
 
 
 f = figure('Name', 'Piston position time series');
+grid on
+box on
 set(gcf,'color','w');
 hold on
 % title('Piston position $\mu_\mathrm{p}$', Interpreter='latex');
@@ -43,6 +47,8 @@ lgd.FontSize = 8;
 hold off
 
 f = figure('Name', 'Actuation force time series');
+grid on
+box on
 set(gcf,'color','w');
 hold on
 % title('Actuation force $f_\mathrm{p}$', Interpreter='latex');

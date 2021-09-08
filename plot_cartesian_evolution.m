@@ -5,7 +5,9 @@ startup
 out_sim = load('data/out_backstepping.mat').out;
 
 f = figure;
-f.Position(3:4) = [560 420];
+grid on
+box on
+% f.Position(3:4) = [560 420];
 set(gcf,'color','w');
 hold on
 
