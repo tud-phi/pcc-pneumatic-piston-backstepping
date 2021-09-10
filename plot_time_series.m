@@ -14,14 +14,17 @@ hold on
 % title('Configuration $q$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$q$ [$^{\circ}$]', Interpreter='latex');
-ylim([-120 +45]);
-plot(out_backstepping.q_ref/pi*180, LineWidth=2);
+ylim([-115 +45]);
+plot(out_backstepping.q_ref/pi*180, LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_backstepping.q/pi*180, '--', LineWidth=2);
+plot(out_backstepping.q/pi*180, '--', LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_pid.q/pi*180, ':', LineWidth=2);
-lgd = legend('$q_1$','$q_2$', '$q_3$', Interpreter='latex');
-lgd.FontSize = 8;
+plot(out_pid.q/pi*180, ':', LineWidth=1.75);
+lgd = legend('$\bar{q}_1$','$\bar{q}_2$', '$\bar{q}_3$', ...
+             '$q_{\mathrm{Back},1}$', '$q_{\mathrm{Back},2}$', '$q_{\mathrm{Back},3}$', ...
+             '$q_{\mathrm{PID},1}$', '$q_{\mathrm{PID},2}$', '$q_{\mathrm{PID},3}$', ...
+             Interpreter='latex');
+lgd.FontSize = 11;
 hold off
 
 
@@ -33,9 +36,9 @@ hold on
 % title('Piston position $\mu_\mathrm{p}$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$\mu_\mathrm{p}$ [mm]', Interpreter='latex');
-plot(out_backstepping.mu_p*1000, '--', LineWidth=2);
+plot(out_backstepping.mu_p*1000, '--', LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_pid.mu_p*1000, ':', LineWidth=2);
+plot(out_pid.mu_p*1000, ':', LineWidth=1.75);
 lgd = legend('$\mu_{\mathrm{p},1,\mathrm{L}}$', ...
              '$\mu_{\mathrm{p},1,\mathrm{R}}$', ...
              '$\mu_{\mathrm{p},2,\mathrm{L}}$', ...
@@ -43,7 +46,7 @@ lgd = legend('$\mu_{\mathrm{p},1,\mathrm{L}}$', ...
              '$\mu_{\mathrm{p},3,\mathrm{L}}$', ...
              '$\mu_{\mathrm{p},3,\mathrm{R}}$', ...
              Interpreter='latex');
-lgd.FontSize = 8;
+lgd.FontSize = 11;
 hold off
 
 f = figure('Name', 'Actuation force time series');
@@ -55,9 +58,9 @@ hold on
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$f_\mathrm{p}$ [N]', Interpreter='latex');
 ylim([-350 0]);
-plot(out_backstepping.f_p, '--', LineWidth=1);
+plot(out_backstepping.f_p, '--', LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_pid.f_p, ':', LineWidth=1);
+plot(out_pid.f_p, ':', LineWidth=1.75);
 lgd = legend('$f_{\mathrm{p},1,\mathrm{L}}$', ...
              '$f_{\mathrm{p},1,\mathrm{R}}$', ...
              '$f_{\mathrm{p},2,\mathrm{L}}$', ...
@@ -65,5 +68,5 @@ lgd = legend('$f_{\mathrm{p},1,\mathrm{L}}$', ...
              '$f_{\mathrm{p},3,\mathrm{L}}$', ...
              '$f_{\mathrm{p},3,\mathrm{R}}$', ...
              Interpreter='latex');
-lgd.FontSize = 8;
+lgd.FontSize = 11;
 hold off
