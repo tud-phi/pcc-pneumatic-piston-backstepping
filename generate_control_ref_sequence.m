@@ -25,7 +25,7 @@ datavals(start_idx:stop_idx, :) = 0*repmat([1, 1, 1], ts_rate*period_duration+1,
 start_idx = stop_idx;
 
 % wave position
-period_duration = 30;
+period_duration = 20;
 stop_idx = start_idx + ts_rate*period_duration;
 datavals(start_idx:stop_idx, :) = repmat([40, -30, 10], ts_rate*period_duration+1, 1)/180*pi;
 start_idx = stop_idx;
