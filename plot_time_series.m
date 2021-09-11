@@ -2,7 +2,7 @@
 startup
 
 %% Plot time series
-out_backstepping = load('data/out_backstepping.mat').out;
+out_backstepping = load('data/out_backstepping_v2.mat').out;
 out_pid = load('data/out_pid.mat').out;
 
 f = figure('Name', 'Configuration time series');

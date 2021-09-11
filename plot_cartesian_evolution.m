@@ -7,7 +7,7 @@ out_sim = load('data/out_backstepping.mat').out;
 f = figure('Name', 'Cartesian evolution');
 grid on
 box on
-% f.Position(3:4) = [560 420];
+f.Position(3:4) = [380 420];
 set(gcf,'color','w');
 axis equal
 hold on
@@ -60,6 +60,6 @@ for i=1:n_b
 end
 set(gca, 'ColorOrderIndex', 1)
 
-xlim([-3 +35]);
-ylim([-32 +14]);
+xlim([-2 +35]);
+ylim([-32 +15]);
 hold off
