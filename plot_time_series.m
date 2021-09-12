@@ -13,13 +13,13 @@ set(gcf,'color','w');
 hold on
 % title('Configuration $q$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
-ylabel('$q$ [$^{\circ}$]', Interpreter='latex');
+ylabel('$q$ [rad]', Interpreter='latex');
 ylim([-115 +45]);
-plot(out_backstepping.q_ref/pi*180, LineWidth=1.75);
+plot(out_backstepping.q_ref, LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_backstepping.q/pi*180, '--', LineWidth=1.75);
+plot(out_backstepping.q, '--', LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_pid.q/pi*180, ':', LineWidth=1.75);
+plot(out_pid.q, ':', LineWidth=1.75);
 lgd = legend('$\bar{q}_1$','$\bar{q}_2$', '$\bar{q}_3$', ...
              '$q_{\mathrm{Back},1}$', '$q_{\mathrm{Back},2}$', '$q_{\mathrm{Back},3}$', ...
              '$q_{\mathrm{PID},1}$', '$q_{\mathrm{PID},2}$', '$q_{\mathrm{PID},3}$', ...
