@@ -2,7 +2,7 @@
 startup
 
 %% Plot time series
-out_sim = load('data/out_backstepping.mat').out;
+out_sim = load('data/out_backstepping_v3.mat').out;
 
 f = figure('Name', 'Cartesian evolution');
 grid on
