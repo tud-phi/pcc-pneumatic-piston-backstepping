@@ -14,7 +14,7 @@ hold on
 % title('Configuration $q$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$q$ [rad]', Interpreter='latex');
-ylim([-115 +45]);
+ylim([-2.0071 +0.7854]);
 plot(out_backstepping.q_ref, LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
 plot(out_backstepping.q, '--', LineWidth=1.75);
