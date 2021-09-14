@@ -8,7 +8,7 @@ out_pid = load('data/out_pid.mat').out;
 f = figure('Name', 'Configuration time series');
 grid on
 box on
-% f.Position(3:4) = [560 2*420];
+f.Position(3:4) = [560 315];
 set(gcf,'color','w');
 hold on
 % title('Configuration $q$', Interpreter='latex');
@@ -29,6 +29,7 @@ hold off
 
 
 f = figure('Name', 'Piston position time series');
+f.Position(3:4) = [560 315];
 grid on
 box on
 set(gcf,'color','w');
@@ -50,6 +51,7 @@ lgd.FontSize = 11;
 hold off
 
 f = figure('Name', 'Actuation force time series');
+f.Position(3:4) = [560 315];
 grid on
 box on
 set(gcf,'color','w');
