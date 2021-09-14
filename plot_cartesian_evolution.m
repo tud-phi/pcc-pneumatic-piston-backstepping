@@ -13,7 +13,7 @@ out_sim = out_backstepping;
 f = figure('Name', 'Cartesian evolution');
 grid on
 box on
-f.Position(3:4) = [380 420];
+f.Position(3:4) = [420 610];
 set(gcf,'color','w');
 axis equal
 hold on
