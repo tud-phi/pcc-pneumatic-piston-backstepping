@@ -1,9 +1,13 @@
 %% Run startup
 startup
 
-%% Plot time series
+%% Plot time
+% standard actuator dynamics configuration (m_p = 0.19kg)
 out_backstepping = load('data/out_backstepping_v3.mat').out;
-out_pid = load('data/out_pid.mat').out;
+out_pid = load('data/out_pid_d_p-10000.mat').out;
+% increase piston mass m_p to 0.5kg
+% out_backstepping = load('data/out_backstepping_v3_m_p-0.5_d_p-10000.mat').out;
+% out_pid = load('data/out_pid_m_p-0.5_untuned.mat').out;
 
 f = figure('Name', 'Configuration time series');
 grid on
@@ -14,7 +18,8 @@ hold on
 % title('Configuration $q$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$q$ [rad]', Interpreter='latex');
-ylim([-2.0071 +0.7854]);
+% ylim([-2.0071 +0.7854]);
+ylim([-2.0071 +1.8]);
 plot(out_backstepping.q_ref, LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
 plot(out_backstepping.q, '--', LineWidth=1.75);
