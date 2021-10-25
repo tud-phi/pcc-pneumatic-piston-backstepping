@@ -24,27 +24,6 @@ fps = min([fps, 1/max_delta_t])
 alpha = out.alpha.Data;
 out_l = out.l.Data;
 
-q = out.q.Data;
-% introduce tolerance for numerical stability
-q = set_min_abs_val(q, 0.005);
-% q0 = q(:, 1);
-% q1 = q(:, 2);
-% q2 = q(:, 3);
-% 
-% kappa0 = q0/out_l(1);
-% kappa1 = q1/out_l(2);
-% kappa2 = q2/out_l(3);
-% kappa = [kappa0, kappa1, kappa2];
-% 
-% s1 = gen_s_cartesian_evolution(out_l, 1);
-% s2 = gen_s_cartesian_evolution(out_l, 2);
-% s3 = gen_s_cartesian_evolution(out_l, 3);
-% s = cat(1, s1, s2, s3);
-% 
-% s_m = [out_l(1), 0, 0;
-%        out_l(1), out_l(2), 0;
-%        out_l(1), out_l(2), out_l(3)];
-
 %% gathering of frames
 fh = figure;
 fh.Position(3:4) = [640 640];
@@ -70,7 +49,7 @@ for sim_idx=1:length(sim_range)
         frame_idx = frame_idx + 1;
         waitbar(frame_idx/num_frames, f);
 
-        for i=1:size(q, 2)
+        for i=1:length(out_l)
             s = gen_s_cartesian_evolution(out.l.Data, i);
             kappa_pcc_steady_t = repmat(set_min_abs_val(out.q.Data(sim_idx, :), 0.001) ./ out.l.Data, size(s, 1), 1);
             x_pcc_steady_t = forward_kinematics(out.alpha.Data, s, kappa_pcc_steady_t);
@@ -80,7 +59,7 @@ for sim_idx=1:length(sim_range)
         set(gca, 'ColorOrderIndex', 1)
 
         % plot cartesian evolution of tip of segments
-        for i=1:size(q, 2)
+        for i=1:length(out_l)
             xy_data = out.('x'+string(i-1)).Data;
             plot(xy_data(1:sim_idx, 1)*100, xy_data(1:sim_idx, 2)*100, ':', LineWidth=1.5);
         end
