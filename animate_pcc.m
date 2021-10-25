@@ -47,11 +47,18 @@ s_m = [out_l(1), 0, 0;
 
 %% gathering of frames
 fh = figure;
-fh.Visible = 'off';
+fh.Position(3:4) = [640 640];
+set(gcf,'color','w');
+grid on
+box on
+axis equal
+% fh.Visible = 'off';
+
 sim_range = 1:1:size(kappa, 1);
 num_frames = ceil(time(end)*fps);
 clear M;
-M(num_frames) = struct('cdata',[],'colormap',[]);
+M_movie(num_frames) = struct('cdata',[],'colormap',[]);
+M_video(num_frames) = struct('cdata',[],'colormap',[]);
 t_last_frame = -Inf;
 frame_idx = 0;
 f = waitbar(0, 'Creating movie...');
@@ -62,22 +69,34 @@ for sim_idx=1:length(sim_range)
         waitbar(frame_idx/num_frames, f);
         kappa_pcc_t = repmat(kappa(sim_idx, :), size(s, 1), 1);
         x_pcc_t = forward_kinematics(alpha, s, kappa_pcc_t);
-        plot(x_pcc_t(:, 1), x_pcc_t(:, 2))
+        plot(x_pcc_t(:, 1)*100, x_pcc_t(:, 2)*100, LineWidth=2.5)
         hold on;
         kappa_m_t = repmat(kappa(sim_idx, :), size(s_m, 1), 1);
         x_m_t = forward_kinematics(alpha, s_m, kappa_m_t);
-        plot(x_m_t(:, 1), x_m_t(:, 2), 'r*')
-        xlim([-(sum(l)), (sum(l))]);
-        ylim([-(sum(l)), (sum(l))]);
+        plot(x_m_t(:, 1)*100, x_m_t(:, 2)*100, 'r*')
+        xlim([-(sum(l)*100), (sum(l)*100)]);
+        ylim([-(sum(l)*100), (sum(l)*100)]);
+        xlabel('$x$ [cm]', Interpreter='latex');
+        ylabel('$y$ [cm]', Interpreter='latex');
+        
         hold off;
         drawnow;
-        M(frame_idx) = getframe;
+        M_movie(frame_idx) = getframe;
+        M_video(frame_idx) = getframe(fh);
         t_last_frame = t;
     end
 end
 close(f);
 
-%% Display of movie
-fh.Visible = 'on';
-movie(M, [repeat], fps);
+%% Save movie
+v = VideoWriter('animate_pcc.mp4', 'MPEG-4');
+v.FrameRate = fps;
+disp(v.Height)
+disp(v.Width)
+open(v);
+writeVideo(v, M_video);
+close(v);
 
+%% Display of movie
+clf(fh, 'reset');
+movie(M_movie, [repeat], fps);
