@@ -33,7 +33,7 @@ box on
 axis equal
 % fh.Visible = 'off';
 
-sim_range = 1:1:size(kappa, 1);
+sim_range = 1:1:size(out.tout, 1);
 num_frames = ceil(time(end)*fps);
 clear M;
 M_movie(num_frames) = struct('cdata',[],'colormap',[]);
