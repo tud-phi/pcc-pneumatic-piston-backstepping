@@ -7,7 +7,7 @@ out_backstepping = load('data/out_backstepping_v3_d_p-10000.mat').out;
 out_pid = load('data/out_pid_d_p-10000.mat').out;
 % increase piston mass m_p to 0.5kg
 % out_backstepping = load('data/out_backstepping_v3_m_p-0.5_d_p-10000.mat').out;
-% out_pid = load('data/out_pid_m_p-0.5_untuned.mat').out;
+% out_pid = load('data/out_pid_m_p-0.5_d_p-10000_untuned.mat').out;
 
 f = figure('Name', 'Configuration time series');
 grid on
