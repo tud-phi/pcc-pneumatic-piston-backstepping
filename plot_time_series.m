@@ -77,3 +77,26 @@ lgd = legend('$f_{\mathrm{p},1,\mathrm{L}}$', ...
              Interpreter='latex');
 lgd.FontSize = 11;
 hold off
+
+f = figure('Name', 'Pressure time series');
+f.Position(3:4) = [560 315];
+grid on
+box on
+set(gcf,'color','w');
+hold on
+% title('Actuation force $f_\mathrm{p}$', Interpreter='latex');
+xlabel('Time [s]', Interpreter='latex');
+ylabel('$p$ [bar]', Interpreter='latex');
+% ylim([1 5]);
+plot(out_backstepping.p ./ 10^5, '--', LineWidth=1.75);
+set(gca, 'ColorOrderIndex', 1)
+plot(out_pid.p ./ 10^5, ':', LineWidth=1.75);
+lgd = legend('$p_{1,\mathrm{L}}$', ...
+             '$p_{1,\mathrm{R}}$', ...
+             '$p_{2,\mathrm{L}}$', ...
+             '$p_{2,\mathrm{R}}$', ...
+             '$p_{3,\mathrm{L}}$', ...
+             '$p_{3,\mathrm{R}}$', ...
+             Interpreter='latex');
+lgd.FontSize = 11;
+hold off
