@@ -228,6 +228,9 @@ V0 = subs(V0, q, zeros(length(q), 1));
 % pressure to determine alpha_air
 alpha_air = p_atm * V0;
 
+% pressure in the system
+p = simplify(alpha_air ./ V);
+
 % potential energy of fluid
 U_fluid_j = -alpha_air .* (log(V) - log(V0) - V./V0 + 1);
 U_fluid = simplify(sum(U_fluid_j, 1));
@@ -340,6 +343,8 @@ matlabFunction(V_p, 'vars', {mu_p, A_p}, 'file', strcat(dpath,'/V_p_fun'), 'Opti
 matlabFunction(V_C, 'vars', {q, b_C, d_C}, 'file', strcat(dpath,'/V_C_fun'), 'Optimize', false);
 fprintf('alpha air ... ')
 matlabFunction(alpha_air, 'vars', {l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/alpha_air_fun'), 'Optimize', false);
+fprintf('Pressure ... ')
+matlabFunction(p, 'vars', {q, mu_p, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/p_fun'), 'Optimize', false);
 fprintf('G_p_mu ... ')
 matlabFunction(G_p_mu, 'vars', {q, mu_p, l_p, A_p, b_C, d_C}, 'file', strcat(dpath,'/G_p_mu_fun'), 'Optimize', false);
 fprintf('G_p_q ... ');
