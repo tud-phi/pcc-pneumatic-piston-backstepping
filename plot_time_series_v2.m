@@ -3,13 +3,13 @@ startup
 
 %% Plot time
 % standard actuator dynamics configuration (m_p = 0.19kg)
-out_backstepping = load('data/out_backstepping_v3_d_p-10000.mat').out;
-out_pid_ma = load('data/out_pid.mat').out;
-out_pid_fs = load('data/out_pid_full_system_d_p-10000.mat').out;
+out = load('data/out_backstepping_v3_d_p-10000.mat').out;
+% out = load('data/out_pid.mat').out;
+% out = load('data/out_pid_full_system_d_p-10000.mat').out;
 % increase piston mass m_p to 0.5kg
-% out_backstepping = load('data/out_backstepping_v3_m_p-0.5_d_p-10000.mat').out;
-% out_pid_ma = load('data/out_pid_m_p-0.5_d_p-10000_untuned.mat').out;
-% out_pid_fs = load('data/out_pid_full_system_m_p-0.5_d_p-10000_untuned.mat').out;
+% out = load('data/out_backstepping_v3_m_p-0.5_d_p-10000.mat').out;
+% out = load('data/out_pid_m_p-0.5_d_p-10000_untuned.mat').out;
+% out = load('data/out_pid_full_system_m_p-0.5_d_p-10000_untuned.mat').out;
 
 f = figure('Name', 'Configuration time series');
 grid on
@@ -22,18 +22,13 @@ xlabel('Time [s]', Interpreter='latex');
 ylabel('$q$ [rad]', Interpreter='latex');
 % ylim([-2.0071 +0.7854]);
 ylim([-2.0071 +1.8]);
-plot(out_backstepping.q_ref, LineWidth=1.75);
+plot(out.q_ref, LineWidth=1.75);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_backstepping.q, '--', LineWidth=1.75);
-set(gca, 'ColorOrderIndex', 1)
-plot(out_pid_ma.q, ':', LineWidth=1.75);
-set(gca, 'ColorOrderIndex', 1)
-plot(out_pid_fs.q, '-.', LineWidth=1.75);
+plot(out.q, ':', LineWidth=1.75);
 lgd = legend('$\bar{q}_1$','$\bar{q}_2$', '$\bar{q}_3$', ...
-             '$q_{\mathrm{Back},1}$', '$q_{\mathrm{Back},2}$', '$q_{\mathrm{Back},3}$', ...
-             '$q_{\mathrm{MA-PID},1}$', '$q_{\mathrm{MA-PID},2}$', '$q_{\mathrm{MA-PID},3}$', ...
-             '$q_{\mathrm{FS-PID},1}$', '$q_{\mathrm{FS-PID},2}$', '$q_{\mathrm{FS-PID},3}$', ...
-             Interpreter='latex');
+             '$q_{1}$', '$q_{2}$', '$q_{3}$', ...
+             Interpreter='latex', Location='northwest', ...
+             Orientation='vertical', NumColumns=2);
 lgd.FontSize = 11;
 hold off
 
@@ -47,18 +42,14 @@ hold on
 % title('Piston position $\mu_\mathrm{p}$', Interpreter='latex');
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$\mu_\mathrm{p}$ [mm]', Interpreter='latex');
-plot(out_backstepping.mu_p*1000, '--', LineWidth=1.75);
-set(gca, 'ColorOrderIndex', 1)
-plot(out_pid_ma.mu_p*1000, ':', LineWidth=1.75);
-set(gca, 'ColorOrderIndex', 1)
-plot(out_pid_fs.mu_p*1000, '-.', LineWidth=1.75);
+plot(out.mu_p*1000, ':', LineWidth=1.75);
 lgd = legend('$\mu_{\mathrm{p},1,\mathrm{L}}$', ...
              '$\mu_{\mathrm{p},1,\mathrm{R}}$', ...
              '$\mu_{\mathrm{p},2,\mathrm{L}}$', ...
              '$\mu_{\mathrm{p},2,\mathrm{R}}$', ...
              '$\mu_{\mathrm{p},3,\mathrm{L}}$', ...
              '$\mu_{\mathrm{p},3,\mathrm{R}}$', ...
-             Interpreter='latex');
+             Interpreter='latex', Location='northwest');
 lgd.FontSize = 11;
 hold off
 
@@ -72,18 +63,14 @@ hold on
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$f_\mathrm{p}$ [N]', Interpreter='latex');
 ylim([-350 0]);
-plot(out_backstepping.f_p, '--', LineWidth=1.75);
-set(gca, 'ColorOrderIndex', 1)
-plot(out_pid_ma.f_p, ':', LineWidth=1.75);
-set(gca, 'ColorOrderIndex', 1)
-plot(out_pid_fs.f_p, ':', LineWidth=1.75);
+plot(out.f_p, ':', LineWidth=1.75);
 lgd = legend('$f_{\mathrm{p},1,\mathrm{L}}$', ...
              '$f_{\mathrm{p},1,\mathrm{R}}$', ...
              '$f_{\mathrm{p},2,\mathrm{L}}$', ...
              '$f_{\mathrm{p},2,\mathrm{R}}$', ...
              '$f_{\mathrm{p},3,\mathrm{L}}$', ...
              '$f_{\mathrm{p},3,\mathrm{R}}$', ...
-             Interpreter='latex');
+             Interpreter='latex', Location='north');
 lgd.FontSize = 11;
 hold off
 
@@ -97,17 +84,13 @@ hold on
 xlabel('Time [s]', Interpreter='latex');
 ylabel('$p$ [bar]', Interpreter='latex');
 % ylim([1 5]);
-plot(out_backstepping.p ./ 10^5, '--', LineWidth=1.75);
-set(gca, 'ColorOrderIndex', 1)
-plot(out_pid_ma.p ./ 10^5, ':', LineWidth=1.75);
-set(gca, 'ColorOrderIndex', 1)
-plot(out_pid_fs.p ./ 10^5, ':', LineWidth=1.75);
+plot(out.p ./ 10^5, ':', LineWidth=1.75);
 lgd = legend('$p_{1,\mathrm{L}}$', ...
              '$p_{1,\mathrm{R}}$', ...
              '$p_{2,\mathrm{L}}$', ...
              '$p_{2,\mathrm{R}}$', ...
              '$p_{3,\mathrm{L}}$', ...
              '$p_{3,\mathrm{R}}$', ...
-             Interpreter='latex');
+             Interpreter='latex', Location='southwest');
 lgd.FontSize = 11;
 hold off
