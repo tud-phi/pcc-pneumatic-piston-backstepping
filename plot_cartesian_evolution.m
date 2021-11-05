@@ -3,17 +3,18 @@ startup
 
 %% Plot time series
 % standard actuator dynamics configuration (m_p = 0.19kg)
-out_backstepping = load('data/out_backstepping_v3.mat').out;
-out_pid = load('data/out_pid_d_p-10000.mat').out;
+% out_sim = load('data/out_backstepping_v3_d_p-10000.mat').out;
+% out_sim = load('data/out_pid_coupling_aware_d_p-10000.mat').out;
+% out_sim = load('data/out_pid_full_system_d_p-10000.mat').out;
 % increase piston mass m_p to 0.5kg
-% out_backstepping = load('data/out_backstepping_v3_m_p-0.5_d_p-10000.mat').out;
-% out_pid = load('data/out_pid_m_p-0.5_d_p-10000_untuned.mat').out;
-out_sim = out_backstepping;
+% out_sim = load('data/out_backstepping_v3_m_p-0.5_d_p-10000.mat').out;
+% out_sim = load('data/out_pid_coupling_aware_m_p-0-5_d_p-10000.mat').out;
+out_sim = load('data/out_pid_full_system_m_p-0.5_d_p-10000_untuned.mat').out;
 
 f = figure('Name', 'Cartesian evolution');
 grid on
 box on
-f.Position(3:4) = [420 610];
+f.Position(3:4) = [336 488];
 set(gcf,'color','w');
 axis equal
 hold on
