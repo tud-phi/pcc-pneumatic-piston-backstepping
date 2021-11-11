@@ -2,7 +2,7 @@
 startup
 
 figureWidth = 672; % same aspect ratio, but smaller: 560
-figureHeight = 222; % same aspect ratio, but smaller: 185
+figureHeight = 228; % same aspect ratio, but smaller: 185
 
 %% Plot time
 % standard actuator dynamics configuration (m_p = 0.19kg)
@@ -21,12 +21,12 @@ f.Position(3:4) = [figureWidth figureHeight];
 set(gcf,'color','w');
 hold on
 % title('Configuration $q$', Interpreter='latex');
-xlabel('Time [s]', Interpreter='latex');
-ylabel('$q$ [rad]', Interpreter='latex');
+xlabel('Time [s]', Interpreter='latex', FontSize=11);
+ylabel('$q$ [rad]', Interpreter='latex', FontSize=11);
 ylim([-2.1 +1.05]);
-plot(out_sim.q_ref, LineWidth=1.75);
+plot(out_sim.q_ref, LineWidth=1.5);
 set(gca, 'ColorOrderIndex', 1)
-plot(out_sim.q, ':', LineWidth=1.75);
+plot(out_sim.q, ':', LineWidth=1.9);
 lgd = legend('$\bar{q}_1$','$\bar{q}_2$', '$\bar{q}_3$', ...
              '$q_{1}$', '$q_{2}$', '$q_{3}$', ...
              Interpreter='latex', Location='south', ...
