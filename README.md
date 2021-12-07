@@ -16,8 +16,13 @@ Please cite our paper if you use our method in your work:
 }
 ```
 
+## Control Scheme
+![Schematic block diagram of the proposed nonlinear backstep- ping controller for a pneumatically-actuated soft robot. The approach considers both the fluidic drive cylinder and the soft system dynamics. It is agnostic to the chosen soft system controller in configuration-space.](figures/backstepping_graphics_control_scheme_v3_cropped.png)
+
 ## Simulation
 We evaluate our proposed backstepping controller on the example of a planar three-segment soft robots modelled through the Piecewise Constant Curvature (PCC) approximation. The simulation of the system model and the controller is implemented in Simulink with access to symbolically-derived equations of motion. Additionally, the behaviour of baseline controllers such as end-to-end and coupling-aware PID can be simulated.
+
+![Shape regulation under PCC approximation - Left: A planar soft robot consisting of three segments each modelled to have constant curvature Right: Model parameters for fluidic volume in soft segment chambers. Each chamber is actuated independently by a fluidic drive cylinder connected through tubing.](figures/backstepping_graphics_pcc_case_overview_v4_cropped.png)
 
 ## Structure
 The following folder structure is used:
@@ -26,6 +31,8 @@ The following folder structure is used:
 - `config.m`: contains the configuration parameters for the derivation of dynamics and some of the simulation run-time parameters. This contains namely the number of segments, the length and mass density of each segment and the equilibrium state of the system.
 - `derive_dynamics.m`: this script can be used to derive the element of the Equations of Motion and the conservative forces using the MATLAB Symbolic Toolbox.
 - `data/in_qref_ts.mat`: contains the sequence of commanded configuration used for set-point regulation.
+
+![Video of backstepping-controlled planar PCC robot.](videos/cartesian_evolution_animation_backstepping.gif)
 
 ## Usage
 Below you can find a guide on how to run the code and re-produce the results in the paper.
