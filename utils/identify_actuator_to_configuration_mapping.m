@@ -2,8 +2,8 @@
 startup
 
 %% Identify actuator to configuration mapping
-% open_system('pcc_actuator_to_configuration_mapping_identification');
-% load_system('pcc_actuator_to_configuration_mapping_identification')
+% open_system('simulink/pcc_actuator_to_configuration_mapping_identification');
+% load_system('simulink/pcc_actuator_to_configuration_mapping_identification')
 
 % deactivate all simulink warnings
 w=warning('off','all');
@@ -27,7 +27,7 @@ for s_step_magnitude = -max_s_step_gain:2*max_s_step_gain/num_steps:max_s_step_g
     s_step_gain = s;
     s_array(idx, :) = s;
     
-    out = sim('pcc_actuator_to_configuration_mapping_identification');
+    out = sim('simulink/pcc_actuator_to_configuration_mapping_identification');
     q_steady_state = out.q.Data(end, :);
     q_array(idx, :) = q_steady_state';
     
