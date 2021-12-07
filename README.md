@@ -17,17 +17,22 @@ Please cite our paper if you use our method in your work:
 ```
 
 ## Simulation
+We evaluate our proposed backstepping controller on the example of a planar three-segment soft robots modelled through the Piecewise Constant Curvature (PCC) approximation. The simulation of the system model and the controller is implemented in Simulink with access to symbolically-derived equations of motion. Additionally, the behaviour of baseline controllers such as end-to-end and coupling-aware PID can be simulated.
 
-## Folder structure
+## Structure
 The following folder structure is used:
-- `main.slx`: contains the main simulink model which implements both the controller and the system model
-- `system_model.slx`: contains the system model
+- `main.slx`: contains the main simulink model which implements both the controller and the system model. The **Initialisation** block contains physical variables of the simulated robot, the acting gravity vector and the initial robot state. The **Control** block includes both the backstepping and the baseline PID controllers. Please make sure to re-connect the _f_p_ signal to the output of a different controller such as the Pneumatic Actuator model-aware PID or the Full-system model-unaware PID if needed. The **Plant** block implements the PCC forward dynamics and equations of motion and the actuator dynamics. It takes the control action (e.g. the force on the piston f_p) as an input.
+- `startup.m`: runs `config.m` and adds folders to the MATLAB path.
+- `config.m`: contains the configuration parameters for the derivation of dynamics and some of the simulation run-time parameters. This contains namely the number of segments, the length and mass density of each segment and the equilibrium state of the system.
+- `derive_dynamics.m`: this script can be used to derive the element of the Equations of Motion and the conservative forces using the MATLAB Symbolic Toolbox.
+- `data/in_qref_ts.mat`: contains the sequence of commanded configuration used for set-point regulation.
 
 ## Usage
+Below you can find a guide on how to run the code and re-produce the results in the paper.
 1. Run the `startup.m` file to set up the environment
 2. Derive the dynamics for the planar soft robotic arm through the PCC assumption with the script `derive_dynamics.m`. The resulting symbolic functions for evaluating the dynamics at a specific robot state are automatically saved in the folder `funs`.
-2. Generate a control reference sequence with the script `generate_control_ref_sequence.m`. The sequence is automatically saved in `data/in_qref_ts.mat`.
-3. Run the simulink model `main.slx` to simulate the system.
-4. Animate the PCC system using the script `plotting/animate_pcc_system.m`. It automatically uses the time-series data from the simulation which is saved in the `out` variable of the workspace.
-5. Save the `out` variable in a mat-file and save it in the `data` folder.
-6. Generate time-series and Cartesian evolution plots using the scripts `plot_cartesian_evolution.m` and `plot_time_series_v2.m` in the `plotting` folder.
+3. Generate a control reference sequence with the script `generate_control_ref_sequence.m`. The sequence is automatically saved in `data/in_qref_ts.mat`.
+4. Run the simulink model `main.slx` to simulate the system.
+5. Animate the PCC system using the script `plotting/animate_pcc_system.m`. It automatically uses the time-series data from the simulation which is saved in the `out` variable of the workspace.
+6. Save the `out` variable in a mat-file and save it in the `data` folder.
+7. Generate time-series and Cartesian evolution plots using the scripts `plot_cartesian_evolution.m` and `plot_time_series_v2.m` in the `plotting` folder.
