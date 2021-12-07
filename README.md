@@ -32,7 +32,7 @@ The following folder structure is used:
 - `derive_dynamics.m`: this script can be used to derive the element of the Equations of Motion and the conservative forces using the MATLAB Symbolic Toolbox.
 - `data/in_qref_ts.mat`: contains the sequence of commanded configuration used for set-point regulation.
 
-![Video of backstepping-controlled planar PCC robot.](videos/cartesian_evolution_animation_backstepping.gif)
+![Video of backstepping-controlled planar PCC robot.]()
 
 ## Usage
 Below you can find a guide on how to run the code and re-produce the results in the paper.
@@ -43,3 +43,7 @@ Below you can find a guide on how to run the code and re-produce the results in 
 5. Animate the PCC system using the script `plotting/animate_pcc_system.m`. It automatically uses the time-series data from the simulation which is saved in the `out` variable of the workspace.
 6. Save the `out` variable in a mat-file and save it in the `data` folder.
 7. Generate time-series and Cartesian evolution plots using the scripts `plot_cartesian_evolution.m` and `plot_time_series_v2.m` in the `plotting` folder.
+
+<p align="center">
+  <img src="videos/cartesian_evolution_animation_backstepping.gif" />
+</p>
