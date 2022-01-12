@@ -12,7 +12,12 @@ Please cite our paper if you use our method in your work:
   title={Piston-Driven Pneumatically-Actuated Soft Robots: modeling and backstepping control},
   author={Stölzle, Maximilian and Della Santina, Cosimo},
   journal={IEEE Robotics and Automation Letters},
-  publisher={IEEE}
+  publisher={IEEE},
+  year={2022},
+  volume={6},
+  number={},
+  pages={1837-1842},
+  doi={10.1109/LCSYS.2021.3134165}
 }
 ```
 
